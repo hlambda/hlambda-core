@@ -1,0 +1,8 @@
+node_modules/
+metadata/
+
+watcher_trigger/
+!watcher_trigger/.gitkeep
+
+# development
+metadata_tmp/

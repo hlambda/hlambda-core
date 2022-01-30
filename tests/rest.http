@@ -1,0 +1,62 @@
+POST http://localhost:1331/console/api/v1/file-view
+content-type: application/json
+x-hlambda-admin-secret: test-password-super-secret
+
+{
+  "path": "metadata/apps/auth/routes/router.auth.js",
+  "encoding": "utf-8"
+}
+
+###
+
+POST http://localhost:1331/console/api/v1/file-edit
+content-type: application/json
+x-hlambda-admin-secret: test-password-super-secret
+
+{
+  "path": "metadata/apps/auth/routes/router.auth.js",
+  "data": "aW1wb3J0IGV4cHJlc3MgZnJvbSAnZXhwcmVzcyc7CmltcG9ydCBhc3luY0hhbmRsZXIgZnJvbSAnZXhwcmVzcy1hc3luYy1oYW5kbGVyJzsKCmltcG9ydCB7IERhdGVUaW1lIH0gZnJvbSAnbHV4b24nOwoKaW1wb3J0IGVycm9ycyBmcm9tICcuLy4uL2Vycm9ycy9pbmRleC5qcyc7CgovLyBDcmVhdGUgZXhwcmVzcyByb3V0ZXIKY29uc3Qgcm91dGVyID0gZXhwcmVzcy5Sb3V0ZXIoKTsKCnJvdXRlci5nZXQoJy9hdXRoJywgYXN5bmNIYW5kbGVyKChyZXEsIHJlcykgPT4gewogIHJlcy5zZW5kKGBQcm90b3R5cGUgd29ya3M6ICR7RGF0ZVRpbWUubm93KCl9ICR7SlNPTi5zdHJpbmdpZnkoZXJyb3JzKX1gKTsKICByZXR1cm47Cn0pKTsKCnJvdXRlci5nZXQoJy9hdXRoL2EnLCBhc3luY0hhbmRsZXIoKHJlcSwgcmVzKSA9PiB7CiAgcmVzLnNlbmQoYFByb3RvdHlwZSBBIHdvcmtzOiAke0RhdGVUaW1lLm5vdygpfWApOwogIHJldHVybjsKfSkpOwoKcm91dGVyLmdldCgnL2F1dGgvV29vT1cnLCBhc3luY0hhbmRsZXIoKHJlcSwgcmVzKSA9PiB7CiAgcmVzLnNlbmQoYFByb3RvdHlwZSBBIHdvcmtzOiAke0RhdGVUaW1lLm5vdygpfWApOwogIHJldHVybjsKfSkpOwoKcm91dGVyLmdldCgnL2F1dGgvYicsIGFzeW5jSGFuZGxlcigocmVxLCByZXMpID0+IHsKICByZXMuc2VuZChgUHJvdG90eXBlIEIgd29ya3M6ICR7RGF0ZVRpbWUubm93KCl9YCk7CiAgcmV0dXJuOwp9KSk7CgpleHBvcnQgZGVmYXVsdCByb3V0ZXI7Cg==",
+  "encodingWrite": "base64",
+  "encodingRead": "utf-8"
+}
+
+### Docker
+POST http://localhost:1335/console/api/v1/file-view
+content-type: application/json
+x-hlambda-admin-secret: 
+
+{
+  "path": "metadata/apps/auth/routes/router.auth.js",
+  "encoding": "utf-8"
+}
+###
+POST http://localhost:1335/console/api/v1/trigger-restart
+content-type: application/json
+x-hlambda-admin-secret: 
+###
+POST http://localhost:1335/console/api/v1/file-edit
+content-type: application/json
+x-hlambda-admin-secret: 
+
+{
+  "path": "metadata/apps/auth/routes/router.auth.js",
+  "data": "==",
+  "encodingWrite": "base64",
+  "encodingRead": "utf-8"
+}
+###
+GET http://localhost:1335/console/api/v1/metadata/export
+content-type: application/json
+x-hlambda-admin-secret: 
+
+###
+POST http://localhost:1335/console/api/v1/file-edit
+content-type: application/json
+x-hlambda-admin-secret: 
+
+{
+  "path": "metadata/apps/bad-app/routes/router.auth.js",
+  "data": "==",
+  "encodingWrite": "base64",
+  "encodingRead": "utf-8"
+}

@@ -1,0 +1,18 @@
+GET http://localhost:1331/console/api/v1/logs
+content-type: application/json
+x-hlambda-admin-secret: 
+
+{
+  "path": "metadata/apps/auth/routes/router.auth.js",
+  "encoding": "utf-8"
+}
+###
+GET http://localhost:1331/console/api/v1/logs-raw
+content-type: application/json
+x-hlambda-admin-secret: 
+
+{
+  "path": "metadata/apps/auth/routes/router.auth.js",
+  "encoding": "utf-8"
+}
+###
