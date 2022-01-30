@@ -1,0 +1,16 @@
+# Defines if the app is enabled or not disabled apps are skipped from importing
+enabled: true
+# Defines if we want to use namespace or not
+use_namespace: true
+# Define the namespace name
+namespace_name: 'demo_app'
+# Custom environment variables override for our app
+env:
+  HASURA_GRAPHQL_API_ENDPOINT: "http://graphql-engine:8099/v1/graphql"
+  HASURA_GRAPHQL_ADMIN_SECRET: "hlambda-test"
+  YES: "yes"
+  HAHAH: "YooY"
+envForce:
+  HASURA_GRAPHQL_API_ENDPOINT: "http://graphql-engine:8099/v1/graphql"
+  HASURA_GRAPHQL_ADMIN_SECRET: "realpassword"
+  SPECIAL_PASSWORD: "realpz"
