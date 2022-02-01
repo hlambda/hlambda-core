@@ -33,6 +33,7 @@
     "express-list-endpoints": "^6.0.0",
     "figlet": "^1.5.2",
     "glob": "^7.2.0",
+    "hlambda": "^0.0.3",
     "lodash": "^4.17.21",
     "multer": "^1.4.4",
     "pm2": "^5.1.2",

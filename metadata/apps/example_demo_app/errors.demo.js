@@ -1,4 +1,4 @@
-import { createErrorDescriptor } from '../../../src/utils/errors.js';
+import { createErrorDescriptor } from 'hlambda';
 
 // --- START SAFE TO EDIT ---
 
