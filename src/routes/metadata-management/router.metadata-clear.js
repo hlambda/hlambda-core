@@ -14,8 +14,8 @@ router.get(
   '/metadata/clear',
   asyncHandler((req, res) => {
     console.log('Removing all the metadata...');
-    console.log('clearing path: rm -rf ', path.resolve(`./metadata/`));
-    rimraf.sync(path.resolve(`./metadata/`));
+    console.log('clearing path: rm -rf ', path.resolve(`${path.resolve(`./metadata/`)}/*`));
+    rimraf.sync(`${path.resolve(`./metadata/`)}/*`);
     res.send(`Hlambda metadata cleared!`);
   })
 );

@@ -29,7 +29,8 @@ router.post(
     console.log(zipEntries);
 
     console.log('Removing all the metadata...');
-    rimraf.sync(path.resolve(`./metadata/`));
+    console.log('clearing path: rm -rf ', path.resolve(`${path.resolve(`./metadata/`)}/*`));
+    rimraf.sync(`${path.resolve(`./metadata/`)}/*`);
 
     zip.extractAllTo(path.resolve('./metadata/'), true);
 
