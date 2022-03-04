@@ -1,0 +1,19 @@
+{
+  "apps": [
+    {
+      "name": "Hlambda Microservice",
+      "script": "src/index.js",
+      "exec_mode": "cluster",
+      "wait_ready": true,
+      "listen_timeout": 10000,
+      "shutdown_with_message": true,
+      "kill_timeout": 1000,
+      "args": "",
+      "instances": 3,
+      "autorestart": true,
+      "max_memory_restart": "2G",
+      "watch": "watcher_trigger/",
+      "watch_delay": 1000
+    }
+  ]
+}

@@ -18,6 +18,7 @@ router.get(
     const outputType = req.query?.type ?? 'rich-text';
 
     if (outputType === 'json') {
+      // This is used by CLI `hlambda server logs`
       res.json(JSON.stringify(consoleOutputBuffer, null, 2));
     } else if (outputType === 'text') {
       res.json(consoleOutputBuffer.join('\n'));

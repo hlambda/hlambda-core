@@ -79,6 +79,8 @@ const spinServer = async () => {
   // Add JSON body parser.
   app.use(express.json());
 
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
   // Allow cors everywhere, it make sense for this usecase, unsafe otherwise!
   app.use(cors());
 
@@ -226,12 +228,29 @@ spinServer()
   .then(() => {
     console.log(`${Array(80 + 1).join('#').yellow}`);
     console.log("Everything that didn't errored out is successfully started!".green);
+    process.send('ready');
   })
   .catch((error) => {
     console.log(`${Array(80 + 1).join('#').yellow}`);
     console.error('Main system error:'.red);
     console.error(error);
   });
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+  process.exit(0);
+});
+
+process.on('message', (msg) => {
+  if (msg === 'shutdown') {
+    console.log('Closing all connections...');
+    setTimeout(() => {
+      console.log('Finished closing connections');
+      process.exit(0);
+    }, 0);
+  }
+});
+
 // let serverInstance = await spinServer();
 // // --------------------------------------------------------------------------------
 // const serverReloader = () => {

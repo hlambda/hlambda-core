@@ -15,17 +15,20 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN echo "Date: `date`" > ./version.txt
-
-RUN ["npm", "install"]
+RUN ["npm", "install", "--only=production", "--ignore-scripts"]
 # If you are building your code for production
 # RUN npm ci --only=production
 
 # Bundle app source
 COPY . .
 
-CMD ["npm", "run", "start"]
+# ARG APP_VERSION=hotbuild
+
+RUN echo -n "Date: `date`" > ./build-time.txt
+# RUN echo -n "$APP_VERSION" > ./version.txt
+
+#CMD ["npm", "run", "start"]
 
 # This is not ready, there are known bugs with cluster mode (state management between nodes, like path in remote shell etc...)
-#CMD ["npm", "run", "cluster-runtime"]
+CMD ["npm", "run", "cluster-runtime"]
 
