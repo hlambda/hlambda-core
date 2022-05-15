@@ -1,66 +1,69 @@
-# Hlambda 
+# Hlambda (/hlæmdə/; hλ;)
 
-# NOTICE
+## What is Hlambda (/hlæmdə/)
+
+Hlambda is ECMAScript meta API service. That means that it offers simple ways to deploy ECMAScript code to local or remote servers.
+
+It is the implementation of the idea to load your ECMAScript code as configuration (metadata). With Hlambda you can easily create a microservice that can load arbitrary code configuration.
+
+The main use case was to implement a stateless REST microservice that will run Hasura custom actions in a separate container, containing any custom business logic.
+
+For more details check ["Getting started"](https://www.hlambda.io/getting-started/).
+
+In production deployments, you can bake metadata and disable the UI console.
+
+## What it can do, and for what it was intended
+
+- Stateless REST Service. (Designed to do)
+- Offer custom business logic to awesome Hasura GraphQL Server. (Designed to do)
+- Hasura GraphQL Server authorization hook. (Designed to do)
+- Process Webhooks, and call other APIs (Apple subscriptions, Stripe). (Designed to do)
+- Encryption, JWT signing or validation.
+- Cron jobs.
+- File transformation, conversion service.
+- Serving static files.
+- Serving frontend artifacts.
+- Fast prototyping. (For hackathons, etc.)
+- Your own GraphQL Service.
+- Remote debugging.
+- Anything that you can think of...
+
+## How to use it
+
+You can check ["Getting started"](https://www.hlambda.io/getting-started/) on how to get started with Hlambda. In short, it goes like this:
+
+- Install latest hlambda CLI. (Hint: `npm i -g hlambda-cli`)
+- Spin up the Docker instance of the Hlambda server. (Hint: Use `hl snip d` to get docker snippet)
+- Use CLI to generate a new Hlambda app. (Hint: `hl init my-app`)
+- (Optional) Configure multiple environments. (Hint: `hl env add staging`)
+- Deploy metadata (Hint: `hl m a`)
+- Test your endpoints :) (Hint: `hl r g demo`)
+
+## Known issues
+
+- Importing npm packages that are used by the Hlambda Core like;
+
+  - "colors": "1.4.0",
+  - "hlambda": "^0.0.3",
+
+can cause known issues... like the disabling inherited colors prototype chain unless FORCE_COLOR is set to true.
+
+Exporting errors in hlambda if imported can also cause it to not be visible in the list of errors or constants on the hlambda server.
+
+Until addressed this has a simple hotfix to just remove that package from the list of dependencies in your hlambda app, before applying metadata.
+
+## NOTICE
 
 ```
-THIS SOFTWARE IS IN ALPHA STATE, IT IS STILL IN DEVELOPMENT, AS SUCH IT IS STILL NOT EASY TO USE, any contributions are greatly appreciated.
+Any contributions are greatly appreciated.
 ```
 
-Hlambda is the implementation of the idea to load your ECMAScript code as configuration (metadata). With Hlambda you can easily create microservice that can load arbitary code configuration.
-
-Main usecase was to implement microservice that will run Hasura custom actions in a separate container.
-
-For more details check hlambda.io/docs
-
-# Example (With docker compose)
-
-```
-version: '3.6'
-services:
-  postgres:
-    image: postgres:12
-    restart: always
-    volumes:
-    - hasura_db_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: postgrespassword
-  graphql-engine:
-    image: hasura/graphql-engine:v2.1.0
-    ports:
-    - "8080:8080"
-    depends_on:
-    - "postgres"
-    restart: always
-    environment:
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: "postgres://postgres:postgrespassword@postgres:5432/postgres"
-      HASURA_GRAPHQL_ADMIN_SECRET: "demo"
-      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
-      HASURA_GRAPHQL_DEV_MODE: "true"
-      HASURA_GRAPHQL_ENABLED_LOG_TYPES: "startup, http-log, webhook-log, websocket-log, query-log"
-      HASURA_GRAPHQL_JWT_SECRET: '{"claims_namespace_path":"$$", "type":"RS256", "key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxITajyliCtRFJ9SLPbGs\n8+uL/FZok7big7zQ6lQUJ/3s+MndrLoAhbBZuaf1RKhzWRkizV7I3BetbZ86Iyir\nt0Fp7Lu0Rtyq5GH1O9vAYh5wdp1bQ1t45v/ifR4/Y7C97qq1e1IoelpJxlkEUAN2\nELBMYJ1SGIl94BKgDoF835H68X/s+bKJHoFYPyGPeJbdNFAmYGgrZMleid+bT3Qr\neijMoMuIj1XVMSlN405QWeNqFMGVB73gjhsc3pmyePUBbi67Va+pEBsbexYVsvqO\nynQYlSExbJfHcNL+f0sYrXsGmsPnFji2JWsE3LEUb6Xgab+zmZb+0NcXzMu+t7Hr\ndwIDAQAB\n-----END PUBLIC KEY-----\n"}'
-      ACTION_BASE_URL: "http://hlambda-core:1331"
-  hlambda-core:
-    image: hlambda/hlambda-core:latest
-    environment:
-      HLAMBDA_ADMIN_SECRET: 'demo'
-      HASURA_GRAPHQL_API_URL: "http://graphql-engine:8080"
-      HASURA_GRAPHQL_ADMIN_SECRET: "demo"
-    ports:
-      - "8081:1331"
-    restart: always
-    volumes:
-      - hlambda_metadata:/usr/src/app/metadata
-
-volumes:
-  hasura_db_data:
-  hlambda_metadata:
-```
-
-once you run it you can check the hlambda console at `http://localhost:8081` and hasura console at `http://localhost:8080`
-
-For the best experience load this docker compose as stack in portainer and enjoy the UI's. :)
-
-# Author
+## Authors
 
 Gordan Nekić <gordan@neki.ch>
+
+## How to support the project
+
+I've recently created Patreon that will enable me to work more on the Hlambda services.
+
+<span class="badge-patreon"><a href="https://www.patreon.com/bePatron?u=70751523" title="Donate to this project using Patreon"><img src="https://img.shields.io/badge/patreon-donate-green.svg" alt="Patreon donate button" /></a></span>
