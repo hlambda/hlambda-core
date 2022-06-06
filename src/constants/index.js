@@ -84,12 +84,17 @@ export const constants = {
   ENV_HLAMBDA_DISABLE_ADMIN_SECRET: {
     name: 'HLAMBDA_DISABLE_ADMIN_SECRET',
     default: 'false',
-    description: 'Is master password for API management enabled or disabled.',
+    description: 'Disables or enables master password for API management.',
   },
   ENV_HLAMBDA_DISABLE_CONSOLE: {
     name: 'HLAMBDA_DISABLE_CONSOLE',
     default: 'false',
-    description: 'Is master password for API management enabled or disabled.',
+    description: 'Completely disables Console and Console API thus any metadata update.',
+  },
+  ENV_HLAMBDA_DISABLE_INITIAL_ROUTE_REDIRECT: {
+    name: 'HLAMBDA_DISABLE_INITIAL_ROUTE_REDIRECT',
+    default: 'false',
+    description: 'Disable 301 redirect from the root path to the `/console`.',
   },
   ENV_HLAMBDA_METADATA_RELOAD_DEBOUNCE_MS: {
     name: 'HLAMBDA_METADATA_RELOAD_DEBOUNCE_MS',
@@ -99,7 +104,7 @@ export const constants = {
   ENV_HLAMBDA_LOADED_APPS_PREFIX: {
     name: 'HLAMBDA_LOADED_APPS_PREFIX',
     default: '/api/v1/',
-    description: 'Debounce ms time to wait before closing the server and reloading metadata.',
+    description: 'Prefix used for all the loaded router apps.',
   },
   ENV_HLAMBDA_ENABLE_PUBLIC_SWAGGER: {
     name: 'HLAMBDA_ENABLE_PUBLIC_SWAGGER',
@@ -107,9 +112,55 @@ export const constants = {
     description: 'Flag to enable public swagger on /docs.',
   },
   ENV_HLAMBDA_PUBLIC_SWAGGER_ROUTE: {
-    name: 'HLAMBDA_ENABLE_PUBLIC_SWAGGER',
+    name: 'HLAMBDA_PUBLIC_SWAGGER_ROUTE',
     default: '/docs',
     description: 'Flag to map swagger route, default `/docs`.',
+  },
+
+  // Loader configurations
+  ENV_HLAMBDA_CONFIGURATION_LOADER_PREFIX: {
+    name: 'HLAMBDA_CONFIGURATION_LOADER_PREFIX',
+    default: 'hlambda-config.yaml',
+    description: 'Sets the value for the name of the configuration file that will be loaded.',
+  },
+  ENV_HLAMBDA_EXPRESS_LOADER_PREFIX: {
+    name: 'HLAMBDA_EXPRESS_LOADER_PREFIX',
+    default: 'router.',
+    description: 'Sets the value for the prefix of the router files that will be loaded.',
+  },
+  ENV_HLAMBDA_ENTRYPOINT_LOADER_PREFIX: {
+    name: 'HLAMBDA_ENTRYPOINT_LOADER_PREFIX',
+    default: 'entrypoint.',
+    description: 'Sets the value for the prefix of the entrypoint files that will be loaded.',
+  },
+
+  // Env banners
+  ENV_HLAMBDA_ENABLE_ENVIRONMENT_BANNER: {
+    name: 'HLAMBDA_ENABLE_ENVIRONMENT_BANNER',
+    default: 'false',
+    description: 'Enables environment banner.',
+  },
+  ENV_HLAMBDA_ENVIRONMENT_BANNER_NAME: {
+    name: 'HLAMBDA_ENVIRONMENT_BANNER_NAME',
+    default: '',
+    description: 'Sets name to the environment banner.',
+  },
+  ENV_HLAMBDA_ENVIRONMENT_BANNER_MESSAGE: {
+    name: 'HLAMBDA_ENVIRONMENT_BANNER_MESSAGE',
+    default: '',
+    description: 'Sets message to the environment banner.',
+  },
+  ENV_HLAMBDA_ENABLE_ENVIRONMENT_BANNER_COLOR: {
+    name: 'HLAMBDA_ENABLE_ENVIRONMENT_BANNER_COLOR',
+    default: '#FF0000',
+    description: 'Selects color of the environment banner.',
+  },
+
+  // Env override blacklist
+  ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES: {
+    name: 'HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES',
+    default: 'ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES,HLAMBDA_DISABLE_CONSOLE,HLAMBDA_ADMIN_SECRET',
+    description: 'List of the env variable names that are protected from hlambda config override.',
   },
 
   // Constants used for any other purpose in the code.

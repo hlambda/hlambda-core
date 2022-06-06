@@ -6,3 +6,5 @@ watcher_trigger/
 
 # development
 metadata_tmp/
+
+.DS_Store

@@ -10,7 +10,9 @@ env:
   HASURA_GRAPHQL_ADMIN_SECRET: "hlambda-test"
   YES: "yes"
   HAHAH: "YooY"
+  HLAMBDA_DISABLE_CONSOLE: "false"
 envForce:
   HASURA_GRAPHQL_API_ENDPOINT: "http://graphql-engine:8099/v1/graphql"
   HASURA_GRAPHQL_ADMIN_SECRET: "realpassword"
   SPECIAL_PASSWORD: "realpz"
+  HLAMBDA_DISABLE_CONSOLE: "false"

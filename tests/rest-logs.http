@@ -1,6 +1,9 @@
+# For local testing you can use "you-must-change-me" default password.
+# This is demo password, you should always change it when deplyoing the container.
+
 GET http://localhost:1331/console/api/v1/logs
 content-type: application/json
-x-hlambda-admin-secret: 
+x-hlambda-admin-secret: you-must-change-me
 
 {
   "path": "metadata/apps/auth/routes/router.auth.js",
@@ -9,10 +12,22 @@ x-hlambda-admin-secret:
 ###
 GET http://localhost:1331/console/api/v1/logs-raw
 content-type: application/json
-x-hlambda-admin-secret: 
+x-hlambda-admin-secret: you-must-change-me
 
 {
   "path": "metadata/apps/auth/routes/router.auth.js",
   "encoding": "utf-8"
 }
+###
+
+GET http://localhost:1331/console/api/v1/metadata/version
+content-type: application/json
+x-hlambda-admin-secret: you-must-change-me
+
+###
+
+GET http://localhost:1331/console/api/v1/banner-info
+content-type: application/json
+x-hlambda-admin-secret: you-must-change-me
+
 ###

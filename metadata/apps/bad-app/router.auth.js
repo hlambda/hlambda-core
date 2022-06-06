@@ -1,3 +1,6 @@
+/*
+// Uncomment this file to test how Hlambda handles bad code with errors.
+
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 
@@ -22,3 +25,5 @@ router.get(
 aaa;
 
 export default router;
+
+*/

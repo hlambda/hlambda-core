@@ -1,9 +1,9 @@
-FROM node:16.13.1-alpine3.14
+FROM node:lts-alpine3.15
 
 RUN apk -U upgrade \
   && apk add --no-cache \
-    git \
-    openssh
+  git \
+  openssh
 
 RUN mkdir -p /usr/src/app
 
