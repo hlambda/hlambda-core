@@ -1,6 +1,6 @@
-# Hlambda (/hlæmdə/; hλ;)
+# Hlambda (/hlæmdə/; hλ;) [Hyper Lambda]
 
-## What is Hlambda (/hlæmdə/)
+## What is Hlambda (/hlæmdə/) [Hyper Lambda]
 
 Hlambda is ECMAScript meta API service. That means that it offers simple ways to deploy ECMAScript code to local or remote servers.
 
@@ -52,7 +52,7 @@ Exporting errors in hlambda if imported can also cause it to not be visible in t
 
 Until addressed this has a simple hotfix to just remove that package from the list of dependencies in your hlambda app, before applying metadata.
 
-## NOTICE
+## Notice
 
 ```
 Any contributions are greatly appreciated.

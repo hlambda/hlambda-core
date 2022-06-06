@@ -1,14 +1,14 @@
 {
   "name": "hlambda-core",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "description": "Hlambda core",
   "type": "module",
   "main": "src/index.js",
   "scripts": {
     "start": "node .",
     "dev": "nodemon --delay 2.5 .",
-    "build-docker": "docker build -t hlambda:latest .",
-    "docker-build": "docker build -t hlambda:latest .",
+    "build-docker": "docker build -t hlambda-core:hotbuild .",
+    "docker-build": "docker build -t hlambda-core:hotbuild .",
     "docker-build-all": "docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t hlambda/hlambda-core:latest .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "cluster": "npx pm2 start ecosystem.config.js",
@@ -36,6 +36,7 @@
     "hlambda": "^0.0.3",
     "lodash": "^4.17.21",
     "multer": "^1.4.4",
+    "output-text-formatter": "^0.0.2",
     "pm2": "^5.1.2",
     "rimraf": "^3.0.2",
     "swagger-ui-express": "^4.3.0",
@@ -43,7 +44,7 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "eslint": "^8.6.0",
+    "eslint": "^8.17.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
