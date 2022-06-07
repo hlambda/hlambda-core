@@ -15,7 +15,8 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN echo "Date: `date`" > ./version.txt
+# RUN echo "`date`" > ./image-build-time.txt
+RUN echo "`date +%s`" > ./image-build-timestamp.txt
 
 RUN ["npm", "install"]
 # If you are building your code for production

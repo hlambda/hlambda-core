@@ -166,9 +166,10 @@ const spinServer = async () => {
   app.use(cors());
 
   if (!HLAMBDA_DISABLE_CONSOLE) {
+    // Serve static
+    app.use(express.static('public'));
+
     if (!HLAMBDA_DISABLE_INITIAL_ROUTE_REDIRECT) {
-      // Serve static
-      app.use(express.static('public'));
       // Load main route (Should redirect to console)
       app.use('/', routeLanding);
     }
