@@ -25,6 +25,7 @@ import middlewareProtector from './routes/protector.js';
 // import routeConsole from './routes/console.js';
 import route404 from './routes/404.js';
 import hasuraErrorHandler from './routes/hasuraErrorHandler.js';
+import healthzRouter from './routes/health/public-router.healthz.js';
 // import requestTimeLogger from './utils/requestTimer.js';
 
 import generateDotEnvFileFromConsts from './utils/generateDotEnvFileFromConsts.js';
@@ -153,6 +154,7 @@ const spinServer = async () => {
   // const SERVER_VERSION = getEnvValue(constants.ENV_SERVER_VERSION);
   const HLAMBDA_DISABLE_CONSOLE = isEnvTrue(constants.ENV_HLAMBDA_DISABLE_CONSOLE);
   const HLAMBDA_DISABLE_INITIAL_ROUTE_REDIRECT = isEnvTrue(constants.ENV_HLAMBDA_DISABLE_INITIAL_ROUTE_REDIRECT);
+  const HLAMBDA_CORS_DOMAIN = getEnvValue(constants.ENV_HLAMBDA_CORS_DOMAIN);
   // --------------------------------------------------------------------------------
   const app = express();
   // --------------------------------------------------------------------------------
@@ -163,7 +165,7 @@ const spinServer = async () => {
   app.use(express.json());
 
   // Allow cors everywhere, it make sense for this usecase, unsafe otherwise!
-  app.use(cors());
+  app.use(cors({ origin: HLAMBDA_CORS_DOMAIN }));
 
   if (!HLAMBDA_DISABLE_CONSOLE) {
     // Serve static
@@ -279,6 +281,8 @@ const spinServer = async () => {
     );
   }
   // --------------------------------------------------------------------------------
+  // Add healthz route.
+  app.use(healthzRouter);
   // Handle 404 routes.
   app.use(route404);
   // !!! Important !!! Error handler.

@@ -1,6 +1,6 @@
-# Todo
+# (Future) Release 0.0.9
 
-- Default GET /healthz if does not exist.
+- undefined :)
 
 # Release 0.0.8
 
@@ -9,3 +9,5 @@
 - Add example for the static serving of the content because `__dirname` is not available, `fileURLToPath(import.meta.url);` should be used.
 - Add version build number route. (GET /build-number)
 - Add timestamp to docker image on build `./image-build-timestamp.txt`
+- Add GET /healthz route
+- Add CORS env variable `HLAMBDA_CORS_DOMAIN`, by default Hlambda server continues to allow '\*'
