@@ -4,6 +4,8 @@
 
 Hlambda is ECMAScript meta API service. That means that it offers simple ways to deploy ECMAScript code to local or remote servers.
 
+![Hlambda Banner](https://www.hlambda.io/assets/hlambda-logo-dark.png)
+
 It is the implementation of the idea to load your ECMAScript code as configuration (metadata). With Hlambda you can easily create a microservice that can load arbitrary code configuration.
 
 The main use case was to implement a stateless REST microservice that will run Hasura custom actions in a separate container, containing any custom business logic.

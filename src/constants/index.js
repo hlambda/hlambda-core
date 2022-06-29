@@ -69,6 +69,13 @@ export const constants = {
       'Server max allowed body size from client that express app will support. (Main usecase is Apple Subscription Notifications)',
   },
 
+  ENV_HLAMBDA_CORS_DOMAIN: {
+    name: 'HLAMBDA_CORS_DOMAIN',
+    default: '*',
+    description:
+      'By default, all CORS requests to the Hlambda server are allowed. To run with more restrictive CORS settings, use this env variable. Example: `https://*.foo.bar.com:8080, http://*.localhost, http://localhost:3000, http://example.com`',
+  },
+
   ENV_SERVER_HEALTH: {
     name: 'SERVER_HEALTH',
     default: 'Healthy',
