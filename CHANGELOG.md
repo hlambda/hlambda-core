@@ -1,3 +1,7 @@
+# Todo
+
+- Default GET /healthz if does not exist.
+
 # Release 0.0.8
 
 - Added CHANGELOG.md
