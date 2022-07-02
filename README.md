@@ -11,8 +11,11 @@ Hlambda is ECMAScript meta API service. That means that it offers simple ways to
 
 <a href="https://hub.docker.com/r/hlambda/hlambda-core" title="Docker Image">
 
-![Hlambda Banner](https://www.hlambda.io/assets/hlambda-logo-light.png#gh-dark-mode-only)
-![Hlambda Banner](https://www.hlambda.io/assets/hlambda-logo-dark.png#gh-light-mode-only)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://www.hlambda.io/assets/hlambda-logo-light.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://www.hlambda.io/assets/hlambda-logo-dark.png">
+  <img alt="Hlambda Banner" src="https://www.hlambda.io/assets/hlambda-logo-dark.png">
+</picture>
 
 </a>
 It is the implementation of the idea to load your ECMAScript code as configuration (metadata). With Hlambda you can easily create a microservice that can load arbitrary code configuration.
