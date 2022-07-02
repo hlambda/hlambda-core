@@ -1,11 +1,20 @@
 # Hlambda (/hlæmdə/; hλ;) [Hyper Lambda]
 
+<span><a href="https://www.patreon.com/bePatron?u=70751523" title="Donate to this project using Patreon"><img src="https://img.shields.io/badge/patreon-donate-green.svg" alt="Patreon donate button" /></a></span>
+<span><a href="https://github.com/hlambda/hlambda-core/actions/workflows/publish-docker-image.yml" title="Publish Docker Image"><img src="https://img.shields.io/github/workflow/status/hlambda/hlambda-core/Publish%20Docker%20image" alt="Publish Docker Image" /></a></span>
+<span><a href="https://hub.docker.com/r/hlambda/hlambda-core" title="Docker Image"><img src="https://img.shields.io/docker/image-size/hlambda/hlambda-core/latest" alt="Docker Image Size" /></a></span>
+<span><a href="https://github.com/hlambda/hlambda-core/blob/master/LICENSE.md" title="License"><img src="https://img.shields.io/github/license/hlambda/hlambda-core" alt="License" /></a></span>
+
 ## What is Hlambda (/hlæmdə/) [Hyper Lambda]
 
 Hlambda is ECMAScript meta API service. That means that it offers simple ways to deploy ECMAScript code to local or remote servers.
 
-![Hlambda Banner](https://www.hlambda.io/assets/hlambda-logo-dark.png)
+<a href="https://hub.docker.com/r/hlambda/hlambda-core" title="Docker Image">
 
+![Hlambda Banner](https://www.hlambda.io/assets/hlambda-logo-light.png#gh-dark-mode-only)
+![Hlambda Banner](https://www.hlambda.io/assets/hlambda-logo-dark.png#gh-light-mode-only)
+
+</a>
 It is the implementation of the idea to load your ECMAScript code as configuration (metadata). With Hlambda you can easily create a microservice that can load arbitrary code configuration.
 
 The main use case was to implement a stateless REST microservice that will run Hasura custom actions in a separate container, containing any custom business logic.
@@ -45,14 +54,13 @@ You can check ["Getting started"](https://www.hlambda.io/getting-started/) on ho
 
 - Importing npm packages that are used by the Hlambda Core like;
 
-  - "colors": "1.4.0",
-  - "hlambda": "^0.0.3",
+  - "colors": "1.4.0"
 
-can cause known issues... like the disabling inherited colors prototype chain unless FORCE_COLOR is set to true.
-
-Exporting errors in hlambda if imported can also cause it to not be visible in the list of errors or constants on the hlambda server.
+can cause known issues... like the disabling inherited colors prototype chain unless `FORCE_COLOR` is set to true.
 
 Until addressed this has a simple hotfix to just remove that package from the list of dependencies in your hlambda app, before applying metadata.
+
+- Some of the packages are provided with the hlambda core, but that does not necessarily mean you should use them, you can use your version of packages defined for your hlambda apps.
 
 ## Notice
 
