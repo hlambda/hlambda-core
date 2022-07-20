@@ -5,11 +5,6 @@
 <span><a href="https://hub.docker.com/r/hlambda/hlambda-core" title="Docker Image"><img src="https://img.shields.io/docker/image-size/hlambda/hlambda-core/latest" alt="Docker Image Size" /></a></span>
 <span><a href="https://github.com/hlambda/hlambda-core/blob/master/LICENSE.md" title="License"><img src="https://img.shields.io/github/license/hlambda/hlambda-core" alt="License" /></a></span>
 
-<span><a href="https://www.patreon.com/bePatron?u=70751523" title="Donate to this project using Patreon"><img src="https://img.shields.io/badge/patreon-donate-green.svg" alt="Patreon donate button" /></a></span>
-<span><a href="https://github.com/hlambda/hlambda-core/actions/workflows/publish-docker-image.yml" title="Publish Docker Image"><img src="https://img.shields.io/github/workflow/status/hlambda/hlambda-core/Publish%20Docker%20image" alt="Publish Docker Image" /></a></span>
-<span><a href="https://hub.docker.com/r/hlambda/hlambda-core" title="Docker Image"><img src="https://img.shields.io/docker/image-size/hlambda/hlambda-core/latest" alt="Docker Image Size" /></a></span>
-<span><a href="https://github.com/hlambda/hlambda-core/blob/master/LICENSE.md" title="License"><img src="https://img.shields.io/github/license/hlambda/hlambda-core" alt="License" /></a></span>
-
 ## What is Hlambda (/hlæmdə/) [Hyper Lambda]
 
 Hlambda is ECMAScript meta API service. That means that it offers simple ways to deploy ECMAScript code to local or remote servers.
