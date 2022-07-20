@@ -1,6 +1,6 @@
 {
   "name": "hlambda-core",
-  "version": "0.0.8",
+  "version": "0.0.8-beta.3",
   "description": "Hlambda core",
   "type": "module",
   "main": "src/index.js",
@@ -38,10 +38,13 @@
     "glob": "^7.2.0",
     "hlambda": "^0.0.5",
     "lodash": "^4.17.21",
+    "luxon": "^3.0.1",
     "multer": "^1.4.4",
+    "node-fetch": "^3.2.9",
     "output-text-formatter": "^0.0.2",
     "pm2": "^5.1.2",
     "rimraf": "^3.0.2",
+    "semver": "^7.3.7",
     "swagger-ui-express": "^4.3.0",
     "uuid": "^8.3.2",
     "yaml": "^1.10.2"

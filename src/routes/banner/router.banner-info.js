@@ -11,7 +11,7 @@ const router = express.Router();
 router.get(
   '/banner-info',
   asyncHandler(async (req, res) => {
-    const ENV_HLAMBDA_ENABLE_ENVIRONMENT_BANNER = getEnvValue(constants.ENV_HLAMBDA_ENABLE_ENVIRONMENT_BANNER);
+    const ENV_HLAMBDA_ENABLE_ENVIRONMENT_BANNER = isEnvTrue(constants.ENV_HLAMBDA_ENABLE_ENVIRONMENT_BANNER);
     const ENV_HLAMBDA_ENVIRONMENT_BANNER_NAME = getEnvValue(constants.ENV_HLAMBDA_ENVIRONMENT_BANNER_NAME);
     const ENV_HLAMBDA_ENVIRONMENT_BANNER_MESSAGE = getEnvValue(constants.ENV_HLAMBDA_ENVIRONMENT_BANNER_MESSAGE);
     const ENV_HLAMBDA_ENABLE_ENVIRONMENT_BANNER_COLOR = getEnvValue(

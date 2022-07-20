@@ -154,6 +154,8 @@ const spinServer = async () => {
   // const SERVER_VERSION = getEnvValue(constants.ENV_SERVER_VERSION);
   const HLAMBDA_DISABLE_CONSOLE = isEnvTrue(constants.ENV_HLAMBDA_DISABLE_CONSOLE);
   const HLAMBDA_DISABLE_INITIAL_ROUTE_REDIRECT = isEnvTrue(constants.ENV_HLAMBDA_DISABLE_INITIAL_ROUTE_REDIRECT);
+  const HLAMBDA_CONSOLE_ASSETS_DIR = getEnvValue(constants.ENV_HLAMBDA_CONSOLE_ASSETS_DIR);
+  const HLAMBDA_DISABLE_CONSOLE_FRONTEND = isEnvTrue(constants.ENV_HLAMBDA_DISABLE_CONSOLE_FRONTEND);
   const HLAMBDA_CORS_DOMAIN = getEnvValue(constants.ENV_HLAMBDA_CORS_DOMAIN);
   // --------------------------------------------------------------------------------
   const app = express();
@@ -168,9 +170,6 @@ const spinServer = async () => {
   app.use(cors({ origin: HLAMBDA_CORS_DOMAIN }));
 
   if (!HLAMBDA_DISABLE_CONSOLE) {
-    // Serve static
-    app.use(express.static('public'));
-
     if (!HLAMBDA_DISABLE_INITIAL_ROUTE_REDIRECT) {
       // Load main route (Should redirect to console)
       app.use('/', routeLanding);
@@ -272,13 +271,33 @@ const spinServer = async () => {
         swaggerOptions
       )
     );
-    // Fallback to the index.html on any 404, due to hosting SPA
-    app.use(
-      '/console',
-      fallback('index.html', {
-        root: `./public/console`,
-      })
-    );
+
+    if (!HLAMBDA_DISABLE_CONSOLE_FRONTEND) {
+      if (
+        typeof HLAMBDA_CONSOLE_ASSETS_DIR === 'undefined' ||
+        HLAMBDA_CONSOLE_ASSETS_DIR === '' ||
+        HLAMBDA_CONSOLE_ASSETS_DIR === 'cdn'
+      ) {
+        // Serve from CDN
+        // Security note: By default we should never serve UI by default via CDN
+        // It should be done only explicit, the issue that attacker can gather RCE to any hlambda by just changing artefacts in CDN is super super dangerous.
+        // I'll have to brign up the issue to Hasura team regarding defaults to CDN console.
+
+        // For now there is no option to serve static files from CDN. CDN is not ready. As such we will continue serving local UI
+        app.use(express.static('public'));
+      } else {
+        // Serve static
+        app.use(express.static('public'));
+      }
+
+      // Fallback to the index.html on any 404, due to hosting SPA
+      app.use(
+        '/console',
+        fallback('index.html', {
+          root: `./public/console`,
+        })
+      );
+    }
   }
   // --------------------------------------------------------------------------------
   // Add healthz route.
