@@ -103,6 +103,17 @@ export const constants = {
     default: 'false',
     description: 'Disable 301 redirect from the root path to the `/console`.',
   },
+  ENV_HLAMBDA_DISABLE_CONSOLE_FRONTEND: {
+    name: 'HLAMBDA_DISABLE_CONSOLE_FRONTEND',
+    default: 'false',
+    description: "Disable static serving of the frontend artefacts from hlambda's public folder.",
+  },
+  ENV_HLAMBDA_CONSOLE_ASSETS_DIR: {
+    name: 'HLAMBDA_CONSOLE_ASSETS_DIR',
+    default: 'public',
+    description:
+      'If set it will serve console assets from that directory instead of CDN. Using CDN enables system to have lates UI and receive Console hotfixes without the need for updating image.',
+  },
   ENV_HLAMBDA_METADATA_RELOAD_DEBOUNCE_MS: {
     name: 'HLAMBDA_METADATA_RELOAD_DEBOUNCE_MS',
     default: '1331',
@@ -159,7 +170,7 @@ export const constants = {
   },
   ENV_HLAMBDA_ENABLE_ENVIRONMENT_BANNER_COLOR: {
     name: 'HLAMBDA_ENABLE_ENVIRONMENT_BANNER_COLOR',
-    default: '#FF0000',
+    default: '#fea300',
     description: 'Selects color of the environment banner.',
   },
 

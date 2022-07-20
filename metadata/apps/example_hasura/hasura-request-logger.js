@@ -1,4 +1,4 @@
-import 'colors';
+// import 'colors'; // This is known issue with this package...
 
 const hasuraRequestLogger = (req, res, next) => {
   console.log(`[${req.originalUrl}] Request hit!`);
