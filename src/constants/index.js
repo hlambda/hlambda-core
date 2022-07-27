@@ -43,7 +43,7 @@ export const constants = {
   // Server
   ENV_SERVER_PORT: {
     name: 'SERVER_PORT',
-    default: '4005',
+    default: '1331',
     description: 'Server port on which express app will be hosted',
   },
   ENV_SERVER_SOURCE_IP: {
@@ -85,7 +85,7 @@ export const constants = {
 
   ENV_HLAMBDA_ADMIN_SECRET: {
     name: 'HLAMBDA_ADMIN_SECRET',
-    default: '',
+    default: 'you-must-change-me', // Default value
     description: 'Master password for API management.',
   },
   ENV_HLAMBDA_DISABLE_ADMIN_SECRET: {
@@ -121,7 +121,8 @@ export const constants = {
   },
   ENV_HLAMBDA_LOADED_APPS_PREFIX: {
     name: 'HLAMBDA_LOADED_APPS_PREFIX',
-    default: '/api/v1/',
+    default: '', // We host everything to root, but we give option to user to set prefix.
+    // default: '/api/v1/',
     description: 'Prefix used for all the loaded router apps.',
   },
   ENV_HLAMBDA_ENABLE_PUBLIC_SWAGGER: {

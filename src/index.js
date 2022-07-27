@@ -31,6 +31,7 @@ import healthzRouter from './routes/health/public-router.healthz.js';
 import generateDotEnvFileFromConsts from './utils/generateDotEnvFileFromConsts.js';
 import swaggerDarkThemeCss from './utils/swaggerDarkThemeCss.js';
 import swaggerDocumentGenerator from './utils/generateSwaggerConfig.js';
+import swaggerCustomUIJS from './routes/swagger-custom-js-payload.js';
 
 import { constants, isEnvTrue, getEnvValue } from './constants/index.js';
 
@@ -239,6 +240,8 @@ const spinServer = async () => {
     customJs: './swagger-custom-hlambda-script.js',
   };
   if (enablePublicSwagger) {
+    app.use(swaggerCustomUIJS);
+
     app.use(
       publicSwaggerRoute,
       swaggerUi.serve,
@@ -256,6 +259,7 @@ const spinServer = async () => {
     );
   }
   if (!HLAMBDA_DISABLE_CONSOLE) {
+    app.use('/console/docs', swaggerCustomUIJS);
     app.use(
       '/console/docs',
       swaggerUi.serve,
