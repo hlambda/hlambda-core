@@ -3,3 +3,5 @@
 node_modules/
 
 metadata_tmp/
+
+.env
