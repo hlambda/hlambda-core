@@ -1,12 +1,12 @@
 {
   "name": "hlambda-core",
-  "version": "0.0.8-beta.4",
+  "version": "0.0.9",
   "description": "Hlambda core",
   "type": "module",
   "main": "src/index.js",
   "scripts": {
     "start": "node .",
-    "dev": "nodemon --delay 2.5 .",
+    "dev": "nodemon --delay 2.5 -x 'node . && exit 1'",
     "build-docker": "docker build -t hlambda-core:hotbuild .",
     "docker-build": "docker build -t hlambda-core:hotbuild .",
     "docker-build-all": "docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t hlambda/hlambda-core:latest .",

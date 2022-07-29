@@ -4,6 +4,7 @@ import path from 'path';
 import multer from 'multer';
 import AdmZip from 'adm-zip';
 import rimraf from 'rimraf';
+import fsPromise from 'fs/promises';
 
 import { constants, getEnvValue } from './../../constants/index.js';
 
@@ -19,7 +20,7 @@ const upload = multer({
 router.post(
   '/metadata/import',
   upload.single('metadata'),
-  asyncHandler((req, res) => {
+  asyncHandler(async (req, res) => {
     // We expect zip as data uploaded to this route.
     console.log(req.file);
 
@@ -35,6 +36,17 @@ router.post(
     zip.extractAllTo(path.resolve('./metadata/'), true);
 
     console.log('Done...');
+
+    // Write file in data
+    await fsPromise
+      .writeFile(path.resolve(process.cwd(), './data/last-metadata-import-timestamp'), `${Date.now()}`, 'utf8')
+      .then((data) => {
+        return data;
+      })
+      .catch((error) => {
+        console.error("[restart-microservice] ERROR: can't write ./data/last-metadata-import-timestamp");
+        console.error(error);
+      });
 
     // setTimeout(() => {
     //   process.exit(0);

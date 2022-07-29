@@ -25,6 +25,9 @@ RUN ["npm", "install"]
 # Bundle app source
 COPY . .
 
+# Install node_modules in metadata folder on build
+RUN cd ./metadata && npm install --only=production 
+
 CMD ["npm", "run", "start"]
 
 # This is not ready, there are known bugs with cluster mode (state management between nodes, like path in remote shell etc...)
