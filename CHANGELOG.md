@@ -1,6 +1,15 @@
-# (Future) Release 0.0.9
+# (Future) Release 0.0.10
 
-- undefined :)
+- undefined
+
+# Release 0.0.9
+
+- Added metadata history
+- Added support for socket.io and any module that needs reference to the server instance.
+- Improved Console UI
+- Bugfixes
+- Enable file upload through console
+- Added more examples to the initial metadata
 
 # Release 0.0.8
 
