@@ -38,6 +38,12 @@ import { constants, isEnvTrue, getEnvValue } from './constants/index.js';
 import routes from './routes/index.js';
 import readPackageVersion from './utils/readPackageVersion.js';
 
+// Create Hlambda event emmitter
+import hlambdaEventEmitter from './emitter/index.js';
+
+// Set global Hlambda's event emitter
+global.hlambdaEventEmitter = hlambdaEventEmitter;
+
 const { centerText, splitter } = textFormatter;
 
 // --------------------------------------------------------------------------------
@@ -320,8 +326,13 @@ const spinServer = async () => {
     console.log(`${Array(80 + 1).join('#').yellow}`);
   });
   // --------------------------------------------------------------------------------
+  // For some packages like socket.io we need reference to the server instance to attach
+  global.HLAMBDA_SERVER_INSTANCE = server; // Legacy
+  hlambdaEventEmitter.emit('server-ready', server);
+  // --------------------------------------------------------------------------------
   return server;
 };
+// Returns global server instance
 spinServer()
   .then(() => {
     console.log(`${Array(80 + 1).join('#').yellow}`);

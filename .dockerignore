@@ -2,6 +2,12 @@
 .github/
 node_modules/
 
+watcher_trigger/
+!watcher_trigger/.gitkeep
+
+data/
+!data/.gitkeep
+
 metadata_tmp/
 
 .env

@@ -4,6 +4,9 @@ metadata/
 watcher_trigger/
 !watcher_trigger/.gitkeep
 
+data/
+!data/.gitkeep
+
 # development
 metadata_tmp/
 

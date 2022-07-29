@@ -14,7 +14,7 @@ router.get(
   asyncHandler(async (req, res) => {
     res.send(`Restart triggered!`);
 
-    // Write file in fs
+    // Write file in watch trigger
     await fsPromise
       .writeFile(path.resolve(process.cwd(), './watcher_trigger/restarted.txt'), `${Date.now()}`, 'utf8')
       .then((data) => {
@@ -22,6 +22,17 @@ router.get(
       })
       .catch((error) => {
         console.error("[restart-microservice] ERROR: can't write ./watcher_trigger/restarted.txt");
+        console.error(error);
+      });
+
+    // Write file in data
+    await fsPromise
+      .writeFile(path.resolve(process.cwd(), './data/last-restarted-timestamp'), `${Date.now()}`, 'utf8')
+      .then((data) => {
+        return data;
+      })
+      .catch((error) => {
+        console.error("[restart-microservice] ERROR: can't write ./data/last-restarted-timestamp");
         console.error(error);
       });
 
