@@ -21,7 +21,7 @@ router.get(
         return data;
       })
       .catch((error) => {
-        return 0;
+        // return 0;
       });
 
     const lastMetadataClearTimestamp = await fsp
@@ -30,7 +30,7 @@ router.get(
         return data;
       })
       .catch((error) => {
-        return 0;
+        // return 0;
       });
 
     const lastMetadataImportTimestamp = await fsp
@@ -39,7 +39,7 @@ router.get(
         return data;
       })
       .catch((error) => {
-        return 0;
+        // return 0;
       });
 
     const lastRestartedTimestamp = await fsp
@@ -48,7 +48,7 @@ router.get(
         return data;
       })
       .catch((error) => {
-        return 0;
+        // return 0;
       });
 
     const payload = {
@@ -56,10 +56,18 @@ router.get(
       lastMetadataExportTimestamp,
       lastMetadataImportTimestamp,
       lastMetadataClearTimestamp,
-      lastRestarted: DateTime.fromMillis(lastRestartedTimestamp).toISO(),
-      lastMetadataExport: DateTime.fromMillis(lastMetadataExportTimestamp).toISO(),
-      lastMetadataImport: DateTime.fromMillis(lastMetadataImportTimestamp).toISO(),
-      lastMetadataClear: DateTime.fromMillis(lastMetadataClearTimestamp).toISO(),
+      lastRestarted:
+        typeof lastRestartedTimestamp === 'number' ? DateTime.fromMillis(lastRestartedTimestamp).toISO() : null,
+      lastMetadataExport:
+        typeof lastMetadataExportTimestamp === 'number'
+          ? DateTime.fromMillis(lastMetadataExportTimestamp).toISO()
+          : null,
+      lastMetadataImport:
+        typeof lastMetadataImportTimestamp === 'number'
+          ? DateTime.fromMillis(lastMetadataImportTimestamp).toISO()
+          : null,
+      lastMetadataClear:
+        typeof lastMetadataClearTimestamp === 'number' ? DateTime.fromMillis(lastMetadataClearTimestamp).toISO() : null,
     };
     res.status(200).send(JSON.stringify(payload, null, 2));
   })
