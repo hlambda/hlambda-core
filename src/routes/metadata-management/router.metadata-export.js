@@ -21,12 +21,16 @@ router.post(
 
     // Write file in data
     await fsPromise
-      .writeFile(path.resolve(process.cwd(), './data/last-metadata-export-timestamp'), `${Date.now()}`, 'utf8')
+      .writeFile(
+        path.resolve(process.cwd(), './data/metadata-history/last-metadata-export-timestamp'),
+        `${Date.now()}`,
+        'utf8'
+      )
       .then((data) => {
         return data;
       })
       .catch((error) => {
-        console.error("[restart-microservice] ERROR: can't write ./data/last-metadata-export-timestamp");
+        console.error("[metadata-export] ERROR: can't write ./data/metadata-history/last-metadata-export-timestamp");
         console.error(error);
       });
 
@@ -46,12 +50,16 @@ router.post(
 
     // Write file in data
     await fsPromise
-      .writeFile(path.resolve(process.cwd(), './data/last-metadata-export-timestamp'), `${Date.now()}`, 'utf8')
+      .writeFile(
+        path.resolve(process.cwd(), './data/metadata-history/last-metadata-export-timestamp'),
+        `${Date.now()}`,
+        'utf8'
+      )
       .then((data) => {
         return data;
       })
       .catch((error) => {
-        console.error("[restart-microservice] ERROR: can't write ./data/last-metadata-export-timestamp");
+        console.error("[metadata-export] ERROR: can't write ./data/metadata-history/last-metadata-export-timestamp");
         console.error(error);
       });
 

@@ -27,12 +27,16 @@ router.get(
 
     // Write file in data
     await fsPromise
-      .writeFile(path.resolve(process.cwd(), './data/last-restarted-timestamp'), `${Date.now()}`, 'utf8')
+      .writeFile(
+        path.resolve(process.cwd(), './data/metadata-history/last-restarted-timestamp'),
+        `${Date.now()}`,
+        'utf8'
+      )
       .then((data) => {
         return data;
       })
       .catch((error) => {
-        console.error("[restart-microservice] ERROR: can't write ./data/last-restarted-timestamp");
+        console.error("[restart-microservice] ERROR: can't write ./data/metadata-history/last-restarted-timestamp");
         console.error(error);
       });
 

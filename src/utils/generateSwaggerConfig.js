@@ -4,16 +4,19 @@ const findExpressRoutes = (app) => {
   let route = [];
   const routes = [];
 
-  app._router.stack.forEach(function (middleware) {
+  // eslint-disable-next-line no-underscore-dangle
+  app._router.stack.forEach((middleware) => {
     if (middleware.route) {
       // routes registered directly on the app
       routes.push(middleware.route);
     } else if (middleware.name === 'router') {
       // router middleware
-      middleware.handle.stack.forEach(function (handler) {
+      middleware.handle.stack.forEach((handler) => {
         console.log(handler);
         route = handler.route;
-        route && routes.push(route);
+        if (route) {
+          routes.push(route);
+        }
       });
     }
   });
@@ -54,10 +57,11 @@ const swaggerDocumentGenerator = (app, API_DEFINITION) => {
     acc[path] = {
       ...methods.reduce((accMethods, methodItem) => {
         const methodName = methodItem.toLowerCase();
+        // eslint-disable-next-line no-param-reassign
         accMethods[methodName] = {
-          tags: [path.startsWith('/console/api/') ? 'Hlambda Console' : 'Custom'],
+          tags: [path.startsWith('/console/') ? 'Hlambda Console' : 'Custom'], // Anything hosted in /console/ should be Hlambda Console
           security: [
-            path.startsWith('/console/api/')
+            path.startsWith('/console/')
               ? {
                   APIKeyHeader: [],
                 }

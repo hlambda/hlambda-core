@@ -240,14 +240,13 @@ const spinServer = async () => {
   // Swagger
   const enablePublicSwagger = isEnvTrue(constants.ENV_HLAMBDA_ENABLE_PUBLIC_SWAGGER);
   const publicSwaggerRoute = getEnvValue(constants.ENV_HLAMBDA_PUBLIC_SWAGGER_ROUTE);
-  const swaggerOptions = {
-    explorer: false,
-    customCss: `.swagger-ui .topbar { display: none } .swagger-ui .info { display: none }${swaggerDarkThemeCss}`,
-    customJs: './swagger-custom-hlambda-script.js',
-  };
-  if (enablePublicSwagger) {
-    app.use(swaggerCustomUIJS);
 
+  if (enablePublicSwagger) {
+    const swaggerPublicOptions = {
+      explorer: false,
+      customCss: `.swagger-ui .topbar { display: none } .swagger-ui .info { display: none }${swaggerDarkThemeCss}`,
+      customJs: './swagger-custom-hlambda-script.js',
+    };
     app.use(
       publicSwaggerRoute,
       swaggerUi.serve,
@@ -260,12 +259,18 @@ const spinServer = async () => {
           // apiDocumentation: '/v1.0/docs',
           apiAccepts: 'application/json',
         }),
-        swaggerOptions
+        swaggerPublicOptions
       )
     );
+    // We set this after swaggerDocumentGenerator so that it is not visible in the Custom, a special case for this can be added to swaggerDocumentGenerator.
+    app.use(swaggerCustomUIJS); // It will be visible now in the non public swagger
   }
   if (!HLAMBDA_DISABLE_CONSOLE) {
-    app.use('/console/docs', swaggerCustomUIJS);
+    const swaggerOptions = {
+      explorer: false,
+      customCss: `.swagger-ui .topbar { display: none } .swagger-ui .info { display: none }${swaggerDarkThemeCss}`,
+      customJs: './swagger-custom-hlambda-script.js',
+    };
     app.use(
       '/console/docs',
       swaggerUi.serve,
@@ -281,6 +286,8 @@ const spinServer = async () => {
         swaggerOptions
       )
     );
+    // We set this after swaggerDocumentGenerator so that it is not visible in the Custom, a special case for this can be added to swaggerDocumentGenerator.
+    app.use('/console/docs', swaggerCustomUIJS);
 
     if (!HLAMBDA_DISABLE_CONSOLE_FRONTEND) {
       if (

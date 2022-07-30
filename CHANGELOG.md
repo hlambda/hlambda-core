@@ -1,6 +1,10 @@
-# (Future) Release 0.0.10
+# Release 0.1.0
 
-- undefined
+- Added support for JSON output to stdout, new env variable `JSON_STDOUT` default:false
+- Restructured metadata example location, moved examples to `./data/metadata-examples`
+- Added ability to reset metadata, which will reset metadata to initial image example metadata.
+- Updated UI
+- Bugfixes
 
 # Release 0.0.9
 

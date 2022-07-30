@@ -1,12 +1,14 @@
+# Note .dockerignore syntax is a bit different than .gitignore
+
 .git/
 .github/
 node_modules/
 
-watcher_trigger/
+watcher_trigger/*
 !watcher_trigger/.gitkeep
 
-data/
-!data/.gitkeep
+data/metadata-history/*
+!data/metadata-history/.gitkeep
 
 metadata_tmp/
 

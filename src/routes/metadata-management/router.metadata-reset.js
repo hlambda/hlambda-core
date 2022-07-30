@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import path from 'path';
 import rimraf from 'rimraf';
 import fsPromise from 'fs/promises';
+import fse from 'fs-extra';
 
 import { constants, getEnvValue } from './../../constants/index.js';
 
@@ -12,8 +13,11 @@ const router = express.Router();
 // Warning: PROTECT THIS HEAVILY!!! We do not want to have RCE!
 
 router.get(
-  '/metadata/clear',
+  '/metadata/reset',
   asyncHandler(async (req, res) => {
+    // This action will reset metadata to the example preset already saved to the image. (Making life easier, but dangerous :))
+    // We always need to ask user is he sure, does he really wants to remove existing metadata.
+    console.log('Resetting metadata!');
     console.log('Removing all the metadata...');
     console.log('clearing path: rm -rf ', path.resolve(`${path.resolve(`./metadata/`)}/*`));
     rimraf.sync(`${path.resolve(`./metadata/`)}/*`);
@@ -29,11 +33,24 @@ router.get(
         return data;
       })
       .catch((error) => {
-        console.error("[metadata-clear] ERROR: can't write ./data/metadata-history/last-metadata-clear-timestamp");
+        console.error("[metadata-reset] ERROR: can't write ./data/metadata-history/last-metadata-clear-timestamp");
         console.error(error);
       });
 
-    res.send(`Hlambda metadata cleared!`);
+    // This is still experimental so we will not use it.
+    // fs.cp(src, dest, {recursive: true});
+
+    await fse
+      .copy('./data/metadata-example', './metadata', { recursive: true })
+      .then((data) => {
+        return data;
+      })
+      .catch((error) => {
+        console.error("[metadata-reset] ERROR: can't copy example metadata");
+        console.error(error);
+      });
+
+    res.send(`Hlambda metadata cleared to default example state!`);
   })
 );
 

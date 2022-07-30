@@ -1,5 +1,7 @@
 import { format } from 'util';
 
+import { constants, isEnvTrue } from './../constants/index.js';
+
 const squashArgsArrayToConsoleIntoString = (...data) => {
   return [...data]
     .map((item) => {
@@ -20,16 +22,25 @@ const { error } = console;
 const buffer = [];
 
 console.log = (...data) => {
-  log(...data);
-
   const textThatIGotUsingPrintfFormat = format(...data);
   const textThatIGot = squashArgsArrayToConsoleIntoString(...data);
+  // Get the actuall text, this trick covers %s %s example for console.log();
+  const textResult = textThatIGotUsingPrintfFormat === textThatIGot ? textThatIGot : textThatIGotUsingPrintfFormat;
 
-  if (textThatIGotUsingPrintfFormat === textThatIGot) {
-    buffer.push(textThatIGot);
+  const shouldOutputJSON = isEnvTrue(constants.ENV_JSON_STDOUT);
+
+  if (shouldOutputJSON) {
+    log({
+      timestamp: Date.now(),
+      message: textResult,
+      type: 'stdout',
+    });
   } else {
-    buffer.push(textThatIGotUsingPrintfFormat);
+    log(...data);
   }
+
+  // Buffer should not be affected by the shouldOutputJSON
+  buffer.push(textResult);
 
   if (buffer.length >= 255) {
     buffer.splice(0, 1);
@@ -37,16 +48,25 @@ console.log = (...data) => {
 };
 
 console.error = (...data) => {
-  error(...data);
-
   const textThatIGotUsingPrintfFormat = format(...data);
   const textThatIGot = squashArgsArrayToConsoleIntoString(...data);
+  // Get the actuall text, this trick covers %s %s example for console.log();
+  const textResult = textThatIGotUsingPrintfFormat === textThatIGot ? textThatIGot : textThatIGotUsingPrintfFormat;
 
-  if (textThatIGotUsingPrintfFormat === textThatIGot) {
-    buffer.push(textThatIGot);
+  const shouldOutputJSON = isEnvTrue(constants.ENV_JSON_STDOUT);
+
+  if (shouldOutputJSON) {
+    error({
+      timestamp: Date.now(),
+      message: textResult,
+      type: 'stderr',
+    });
   } else {
-    buffer.push(textThatIGotUsingPrintfFormat);
+    error(...data);
   }
+
+  // Buffer should not be affected by the shouldOutputJSON
+  buffer.push(textResult);
 
   if (buffer.length >= 255) {
     buffer.splice(0, 1);

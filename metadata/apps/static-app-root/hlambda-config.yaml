@@ -1,0 +1,4 @@
+#Uncomment this for static serving.
+
+#envForce:
+#  HLAMBDA_DISABLE_INITIAL_ROUTE_REDIRECT: true
