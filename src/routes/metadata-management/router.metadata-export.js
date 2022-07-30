@@ -15,7 +15,7 @@ const router = express.Router();
 router.post(
   '/metadata/export',
   asyncHandler(async (req, res) => {
-    console.log(`Hlambda metadata export page!`);
+    console.log(`Hlambda metadata export call!`.green);
     res.setHeader('Content-Type', 'application/octet-stream');
     res.setHeader('Content-Disposition', 'attachment; filename=hlambda-metadata.zip');
 

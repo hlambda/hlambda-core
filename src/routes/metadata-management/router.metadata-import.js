@@ -21,6 +21,7 @@ router.post(
   '/metadata/import',
   upload.single('metadata'),
   asyncHandler(async (req, res) => {
+    console.log(`Hlambda metadata import call!`.yellow);
     // We expect zip as data uploaded to this route.
     console.log(req.file);
 

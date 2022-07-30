@@ -14,8 +14,9 @@ const router = express.Router();
 router.get(
   '/metadata/clear',
   asyncHandler(async (req, res) => {
-    console.log('Removing all the metadata...');
-    console.log('clearing path: rm -rf ', path.resolve(`${path.resolve(`./metadata/`)}/*`));
+    console.log(`Hlambda metadata import call!`.red);
+    console.log('Removing all the metadata...'.red);
+    console.log(`clearing path: rm -rf ${path.resolve(`${path.resolve(`./metadata/`)}/*`)}`.red);
     rimraf.sync(`${path.resolve(`./metadata/`)}/*`);
 
     // Write file in data
@@ -33,7 +34,7 @@ router.get(
         console.error(error);
       });
 
-    res.send(`Hlambda metadata cleared!`);
+    res.send(`Hlambda metadata cleared!`.green);
   })
 );
 
