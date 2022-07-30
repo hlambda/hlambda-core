@@ -42,7 +42,7 @@ router.get(
     // fs.cp(src, dest, {recursive: true});
 
     await fse
-      .copy('./data/metadata-example', './metadata', { recursive: true })
+      .copy('./data/metadata-examples', './metadata', { recursive: true })
       .then((data) => {
         return data;
       })
