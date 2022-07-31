@@ -58,7 +58,8 @@ router.post(
         return data;
       })
       .catch(() => {
-        console.log(`File read ${inputPath} failed!`.red);
+        // This is often seen as unnecessary error message, thus for now we are silencing it
+        // console.log(`File read ${inputPath} failed!`.red);
       });
 
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');

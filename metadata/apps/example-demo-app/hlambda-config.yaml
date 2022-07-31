@@ -1,0 +1,24 @@
+# Defines if the app is enabled or not, disabled apps are skipped from importing
+enabled: true
+# # Defines if we want to use namespace or not
+# use_namespace: true # NOT IN USE!
+# # Define the namespace name
+# namespace_name: 'demo_app' # NOT IN USE!
+# Custom environment variables override for our app
+env:
+  HASURA_GRAPHQL_API_ENDPOINT: "http://graphql-engine:8099/v1/graphql"
+  HASURA_GRAPHQL_ADMIN_SECRET: "hlambda-test"
+  HLAMBDA_DISABLE_CONSOLE: "false"
+  
+  #HLAMBDA_ENABLE_ENVIRONMENT_BANNER: "true"
+  #HLAMBDA_ENVIRONMENT_BANNER_NAME: "Local Hlambda Demo Development"
+  #HLAMBDA_ENVIRONMENT_BANNER_MESSAGE: "Hello Hlambda Env Banner!"
+  #HLAMBDA_ENABLE_ENVIRONMENT_BANNER_COLOR: "#eeFF22"
+
+  #JSON_STDOUT: true
+
+envForce:
+  HASURA_GRAPHQL_API_ENDPOINT: "http://graphql-engine:8099/v1/graphql"
+  HASURA_GRAPHQL_ADMIN_SECRET: "real-password"
+  SPECIAL_PASSWORD: "value-from-env"
+  HLAMBDA_DISABLE_CONSOLE: "false"

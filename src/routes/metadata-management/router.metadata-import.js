@@ -21,6 +21,7 @@ router.post(
   '/metadata/import',
   upload.single('metadata'),
   asyncHandler(async (req, res) => {
+    console.log(`Hlambda metadata import call!`.yellow);
     // We expect zip as data uploaded to this route.
     console.log(req.file);
 
@@ -39,12 +40,16 @@ router.post(
 
     // Write file in data
     await fsPromise
-      .writeFile(path.resolve(process.cwd(), './data/last-metadata-import-timestamp'), `${Date.now()}`, 'utf8')
+      .writeFile(
+        path.resolve(process.cwd(), './data/metadata-history/last-metadata-import-timestamp'),
+        `${Date.now()}`,
+        'utf8'
+      )
       .then((data) => {
         return data;
       })
       .catch((error) => {
-        console.error("[restart-microservice] ERROR: can't write ./data/last-metadata-import-timestamp");
+        console.error("[metadata-import] ERROR: can't write ./data/metadata-history/last-metadata-import-timestamp");
         console.error(error);
       });
 

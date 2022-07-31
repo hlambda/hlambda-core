@@ -15,18 +15,22 @@ const router = express.Router();
 router.post(
   '/metadata/export',
   asyncHandler(async (req, res) => {
-    console.log(`Hlambda metadata export page!`);
+    console.log(`Hlambda metadata export call!`.green);
     res.setHeader('Content-Type', 'application/octet-stream');
     res.setHeader('Content-Disposition', 'attachment; filename=hlambda-metadata.zip');
 
     // Write file in data
     await fsPromise
-      .writeFile(path.resolve(process.cwd(), './data/last-metadata-export-timestamp'), `${Date.now()}`, 'utf8')
+      .writeFile(
+        path.resolve(process.cwd(), './data/metadata-history/last-metadata-export-timestamp'),
+        `${Date.now()}`,
+        'utf8'
+      )
       .then((data) => {
         return data;
       })
       .catch((error) => {
-        console.error("[restart-microservice] ERROR: can't write ./data/last-metadata-export-timestamp");
+        console.error("[metadata-export] ERROR: can't write ./data/metadata-history/last-metadata-export-timestamp");
         console.error(error);
       });
 
@@ -46,12 +50,16 @@ router.post(
 
     // Write file in data
     await fsPromise
-      .writeFile(path.resolve(process.cwd(), './data/last-metadata-export-timestamp'), `${Date.now()}`, 'utf8')
+      .writeFile(
+        path.resolve(process.cwd(), './data/metadata-history/last-metadata-export-timestamp'),
+        `${Date.now()}`,
+        'utf8'
+      )
       .then((data) => {
         return data;
       })
       .catch((error) => {
-        console.error("[restart-microservice] ERROR: can't write ./data/last-metadata-export-timestamp");
+        console.error("[metadata-export] ERROR: can't write ./data/metadata-history/last-metadata-export-timestamp");
         console.error(error);
       });
 

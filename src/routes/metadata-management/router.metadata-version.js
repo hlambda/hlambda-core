@@ -51,7 +51,7 @@ router.get(
 
     const hash = await computeMetaHash(`${path.resolve(`./metadata/`)}`)
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         return result;
       })
       .catch((err) => {

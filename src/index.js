@@ -240,14 +240,13 @@ const spinServer = async () => {
   // Swagger
   const enablePublicSwagger = isEnvTrue(constants.ENV_HLAMBDA_ENABLE_PUBLIC_SWAGGER);
   const publicSwaggerRoute = getEnvValue(constants.ENV_HLAMBDA_PUBLIC_SWAGGER_ROUTE);
-  const swaggerOptions = {
-    explorer: false,
-    customCss: `.swagger-ui .topbar { display: none } .swagger-ui .info { display: none }${swaggerDarkThemeCss}`,
-    customJs: './swagger-custom-hlambda-script.js',
-  };
-  if (enablePublicSwagger) {
-    app.use(swaggerCustomUIJS);
 
+  if (enablePublicSwagger) {
+    const swaggerPublicOptions = {
+      explorer: false,
+      customCss: `.swagger-ui .topbar { display: none } .swagger-ui .info { display: none }${swaggerDarkThemeCss}`,
+      // customJs: './swagger-custom-hlambda-script.js', // There is no custom js for public docker if there is one it should be different than console one.
+    };
     app.use(
       publicSwaggerRoute,
       swaggerUi.serve,
@@ -260,11 +259,16 @@ const spinServer = async () => {
           // apiDocumentation: '/v1.0/docs',
           apiAccepts: 'application/json',
         }),
-        swaggerOptions
+        swaggerPublicOptions
       )
     );
   }
   if (!HLAMBDA_DISABLE_CONSOLE) {
+    const swaggerOptions = {
+      explorer: false,
+      customCss: `.swagger-ui .topbar { display: none } .swagger-ui .info { display: none }${swaggerDarkThemeCss}`,
+      customJs: './swagger-custom-hlambda-script.js',
+    };
     app.use('/console/docs', swaggerCustomUIJS);
     app.use(
       '/console/docs',

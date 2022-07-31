@@ -1,11 +1,10 @@
 node_modules/
-metadata/
 
-watcher_trigger/
+watcher_trigger/*
 !watcher_trigger/.gitkeep
 
-data/
-!data/.gitkeep
+data/metadata-history/*
+!data/metadata-history/.gitkeep
 
 # development
 metadata_tmp/

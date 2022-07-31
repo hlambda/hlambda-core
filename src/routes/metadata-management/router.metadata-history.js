@@ -16,7 +16,7 @@ router.get(
   '/metadata/history',
   asyncHandler(async (req, res) => {
     const lastMetadataExportTimestamp = await fsp
-      .readFile('./data/last-metadata-export-timestamp', 'utf-8')
+      .readFile('./data/metadata-history/last-metadata-export-timestamp', 'utf-8')
       .then((data) => {
         return parseInt(data, 10);
       })
@@ -25,7 +25,7 @@ router.get(
       });
 
     const lastMetadataClearTimestamp = await fsp
-      .readFile('./data/last-metadata-clear-timestamp', 'utf-8')
+      .readFile('./data/metadata-history/last-metadata-clear-timestamp', 'utf-8')
       .then((data) => {
         return parseInt(data, 10);
       })
@@ -34,7 +34,7 @@ router.get(
       });
 
     const lastMetadataImportTimestamp = await fsp
-      .readFile('./data/last-metadata-import-timestamp', 'utf-8')
+      .readFile('./data/metadata-history/last-metadata-import-timestamp', 'utf-8')
       .then((data) => {
         return parseInt(data, 10);
       })
@@ -43,7 +43,7 @@ router.get(
       });
 
     const lastRestartedTimestamp = await fsp
-      .readFile('./data/last-restarted-timestamp', 'utf-8')
+      .readFile('./data/metadata-history/last-restarted-timestamp', 'utf-8')
       .then((data) => {
         return parseInt(data, 10);
       })

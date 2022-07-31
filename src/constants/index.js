@@ -19,7 +19,12 @@ export const constants = {
   ENV_DISABLE_COLORS_IN_STDOUT: {
     name: 'DISABLE_COLORS_IN_STDOUT',
     default: 'false',
-    description: 'Set to true if you want to disable colorful output to stdout, it helps if you use AWS CloudWatch',
+    description: 'Set to true if you want to disable colorful output to stdout, it helps if you use AWS CloudWatch.',
+  },
+  ENV_JSON_STDOUT: {
+    name: 'JSON_STDOUT',
+    default: 'false',
+    description: 'Set to true if you want to get JSON output to stdout, it helps if you use AWS CloudWatch.',
   },
   ENV_LOG_LEVELS: {
     name: 'LOG_LEVELS',

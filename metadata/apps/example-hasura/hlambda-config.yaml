@@ -1,0 +1,4 @@
+env:
+  APP_VERSION: "v1.0.0"
+envForce:
+  APP_VERSION: "v1.0.0"
