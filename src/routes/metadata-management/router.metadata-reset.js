@@ -15,7 +15,7 @@ const router = express.Router();
 router.get(
   '/metadata/reset',
   asyncHandler(async (req, res) => {
-    console.log(`Hlambda metadata import call!`.red);
+    console.log(`Hlambda metadata reset call!`.red);
     // This action will reset metadata to the example preset already saved to the image. (Making life easier, but dangerous :))
     // We always need to ask user is he sure, does he really wants to remove existing metadata.
     console.log('Resetting metadata!');
@@ -42,7 +42,9 @@ router.get(
     // fs.cp(src, dest, {recursive: true});
 
     await fse
-      .copy('./data/metadata-examples', './metadata', { recursive: true })
+      .copy(path.resolve(process.cwd(), './data/metadata-examples'), path.resolve(process.cwd(), './metadata'), {
+        recursive: true,
+      })
       .then((data) => {
         return data;
       })

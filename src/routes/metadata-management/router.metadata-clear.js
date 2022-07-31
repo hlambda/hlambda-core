@@ -14,7 +14,7 @@ const router = express.Router();
 router.get(
   '/metadata/clear',
   asyncHandler(async (req, res) => {
-    console.log(`Hlambda metadata import call!`.red);
+    console.log(`Hlambda metadata clear call!`.red);
     console.log('Removing all the metadata...'.red);
     console.log(`clearing path: rm -rf ${path.resolve(`${path.resolve(`./metadata/`)}/*`)}`.red);
     rimraf.sync(`${path.resolve(`./metadata/`)}/*`);

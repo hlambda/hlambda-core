@@ -245,7 +245,7 @@ const spinServer = async () => {
     const swaggerPublicOptions = {
       explorer: false,
       customCss: `.swagger-ui .topbar { display: none } .swagger-ui .info { display: none }${swaggerDarkThemeCss}`,
-      customJs: './swagger-custom-hlambda-script.js',
+      // customJs: './swagger-custom-hlambda-script.js', // There is no custom js for public docker if there is one it should be different than console one.
     };
     app.use(
       publicSwaggerRoute,
@@ -262,8 +262,6 @@ const spinServer = async () => {
         swaggerPublicOptions
       )
     );
-    // We set this after swaggerDocumentGenerator so that it is not visible in the Custom, a special case for this can be added to swaggerDocumentGenerator.
-    app.use(swaggerCustomUIJS); // It will be visible now in the non public swagger
   }
   if (!HLAMBDA_DISABLE_CONSOLE) {
     const swaggerOptions = {
@@ -271,6 +269,7 @@ const spinServer = async () => {
       customCss: `.swagger-ui .topbar { display: none } .swagger-ui .info { display: none }${swaggerDarkThemeCss}`,
       customJs: './swagger-custom-hlambda-script.js',
     };
+    app.use('/console/docs', swaggerCustomUIJS);
     app.use(
       '/console/docs',
       swaggerUi.serve,
@@ -286,8 +285,6 @@ const spinServer = async () => {
         swaggerOptions
       )
     );
-    // We set this after swaggerDocumentGenerator so that it is not visible in the Custom, a special case for this can be added to swaggerDocumentGenerator.
-    app.use('/console/docs', swaggerCustomUIJS);
 
     if (!HLAMBDA_DISABLE_CONSOLE_FRONTEND) {
       if (
