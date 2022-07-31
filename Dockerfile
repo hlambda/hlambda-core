@@ -29,7 +29,7 @@ COPY . .
 RUN cd ./metadata && npm install --only=production 
 
 # At the point of building image we also want to move metadata folder with npm modules to data/metadata-examples
-RUN cp -r ./metadata ./data/metadata-examples
+RUN cp -r ./metadata/* ./data/metadata-examples
 
 CMD ["npm", "run", "start"]
 
