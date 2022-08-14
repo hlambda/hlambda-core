@@ -2,3 +2,5 @@ env:
   APP_VERSION: "v1.0.0"
 envForce:
   APP_VERSION: "v1.0.0"
+  HOOK_SECRET_HEADER_NAME: "x-hook-secret"
+  HOOK_SECRET: "hasura-hook-secret-SuPperSecr3t112"
