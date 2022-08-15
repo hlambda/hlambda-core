@@ -8,7 +8,7 @@ import { constants, isEnvTrue, getEnvValue } from './constants.demo.js';
 // Create express router
 const router = express.Router();
 
-// Middleware to handle authorization for changing anything console related
+// Middleware to handle authorization for the web hook.
 router.use(
   asyncHandler((req, res, next) => {
     const secret = req?.headers?.[getEnvValue(constants.ENV_HOOK_SECRET_HEADER_NAME)];

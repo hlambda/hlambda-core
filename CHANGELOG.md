@@ -7,6 +7,7 @@
 - Added ACL for Non-public Swagger UI in Console.
 - Fix HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES, also add SERVER_PORT to HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES.
 - Added support to get request raw body via new env variable `EXPRESS_BODY_PARSER_INCLUDE_RAW_BODY` default:false
+- Added Hasura Custom Action Middleware that checks for Hasura Web Hook Secret in request header to the example metadata.
 
 # Release 0.1.0
 
