@@ -17,7 +17,7 @@ router.get(
       access: 'console-swagger-ui',
     };
 
-    const token = await jwt.sign(payload, getEnvValue(constants.ENV_HLAMBDA_ADMIN_SECRET), { expiresIn: '1800s' });
+    const token = await jwt.sign(payload, getEnvValue(constants.ENV_HLAMBDA_ADMIN_SECRET), { expiresIn: '86400s' });
 
     res.cookie('console-swagger-ui-access-token', token, { maxAge: 3600 * 24, httpOnly: true });
     // res.redirect('/console/docs');

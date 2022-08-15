@@ -24,17 +24,21 @@ router.use(
       throw new Error(errors.ERROR_INVALID_TOKEN_PROVIDED);
     }
 
-    await jwt.verify(token, getEnvValue(constants.ENV_HLAMBDA_ADMIN_SECRET), (err, user) => {
+    // Verify the token, proceed if everythign is all right.
+    jwt.verify(token, getEnvValue(constants.ENV_HLAMBDA_ADMIN_SECRET), (err, data) => {
       if (err) {
         console.log(err);
         throw new Error(errors.ERROR_FORBIDDEN);
         // return res.sendStatus(403)
       }
 
+      const access = data?.access;
+      if (access !== 'console-swagger-ui') {
+        throw new Error(errors.ERROR_FORBIDDEN);
+      }
+
       next();
     });
-
-    // next();
   })
 );
 
