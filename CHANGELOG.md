@@ -1,3 +1,13 @@
+# Release 0.2.0
+
+- Updated Console UI (Logs: Auto scroll snap, Metadata: Action history dates)
+- Added example for use of constants in default metadata.
+- Added support for parsing cookies.
+- Added example to get and set cookies in default metadata.
+- Added ACL for Non-public Swagger UI in Console.
+- Fix HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES, also add SERVER_PORT to HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES.
+- Added support to get request raw body via new env variable `EXPRESS_BODY_PARSER_INCLUDE_RAW_BODY` default:false
+
 # Release 0.1.0
 
 - Added support for JSON output to stdout, new env variable `JSON_STDOUT` default:false
