@@ -12,21 +12,23 @@ import colors from 'colors';
 import express from 'express';
 import fallback from 'express-history-api-fallback';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 
 import path from 'path';
 import figlet from 'figlet';
 import textFormatter from 'output-text-formatter';
 
-import consoleOutputBuffer from './utils/loggerOverride.js';
+// Override console output.
+import './utils/loggerOverride.js';
 
 import routeLanding from './routes/landing.js';
 import middlewareProtector from './routes/protector.js';
-// import routeConsole from './routes/console.js';
+import swaggerUIMiddlewareProtector from './routes/swaggerUIProtector.js';
+
 import route404 from './routes/404.js';
 import hasuraErrorHandler from './routes/hasuraErrorHandler.js';
 import healthzRouter from './routes/health/public-router.healthz.js';
-// import requestTimeLogger from './utils/requestTimer.js';
 
 import generateDotEnvFileFromConsts from './utils/generateDotEnvFileFromConsts.js';
 import swaggerDarkThemeCss from './utils/swaggerDarkThemeCss.js';
@@ -40,12 +42,12 @@ import readPackageVersion from './utils/readPackageVersion.js';
 
 // Create Hlambda event emmitter
 import hlambdaEventEmitter from './emitter/index.js';
-
+// --------------------------------------------------------------------------------
 // Set global Hlambda's event emitter
 global.hlambdaEventEmitter = hlambdaEventEmitter;
 
-const { centerText, splitter } = textFormatter;
-
+// Spread textFormatter
+const { centerText } = textFormatter;
 // --------------------------------------------------------------------------------
 if (isEnvTrue(constants.ENV_DISABLE_COLORS_IN_STDOUT)) {
   colors.disable();
@@ -170,8 +172,34 @@ const spinServer = async () => {
   // Disable Express header powered by.
   app.disable('x-powered-by');
 
+  // Add cookie parser
+  if (isEnvTrue(constants.ENV_DISABLE_EXPRESS_COOKIE_PARSER)) {
+    // We only include cookie parser for console, we need it there for Swagger UI ACL.
+    app.use('/console/', cookieParser());
+  } else {
+    // By default use it everywhere it is not expensive to have that enabled and it is really useful.
+    app.use(cookieParser());
+  }
+
   // Add JSON body parser.
-  app.use(express.json());
+  if (isEnvTrue(constants.ENV_DISABLE_EXPRESS_BODY_PARSER)) {
+    // Do not use body parser.
+    // We need it only on '/console/api/'
+    app.use('/console/api/', express.json());
+  } else if (isEnvTrue(constants.ENV_EXPRESS_BODY_PARSER_INCLUDE_RAW_BODY)) {
+    const rawBodySaver = (req, res, buffer, encoding) => {
+      if (buffer && buffer?.length) {
+        req.rawBody = `${buffer?.toString(encoding || 'utf8')}`;
+      }
+    };
+    app.use(
+      express.json({
+        verify: rawBodySaver,
+      })
+    );
+  } else {
+    app.use(express.json());
+  }
 
   // Allow cors everywhere, it make sense for this usecase, unsafe otherwise!
   app.use(cors({ origin: HLAMBDA_CORS_DOMAIN }));
@@ -264,6 +292,9 @@ const spinServer = async () => {
     );
   }
   if (!HLAMBDA_DISABLE_CONSOLE) {
+    // Before we start we need to set up protector for public swagger UI
+    app.use('/console/docs/', swaggerUIMiddlewareProtector); // !!! IMPORTANT !!!
+    // Define SwaggerUI options.
     const swaggerOptions = {
       explorer: false,
       customCss: `.swagger-ui .topbar { display: none } .swagger-ui .info { display: none }${swaggerDarkThemeCss}`,
@@ -321,9 +352,9 @@ const spinServer = async () => {
   // !!! Important !!! Error handler.
   app.use(hasuraErrorHandler);
   // --------------------------------------------------------------------------------
-  // Start listening on a single instance.
+  // Get the PORT.
   const SERVER_PORT = getEnvValue(constants.ENV_SERVER_PORT);
-
+  // Start listening on a single instance.
   const server = app.listen(SERVER_PORT, () => {
     console.log(`${Array(80 + 1).join('#').yellow}`);
     console.log(`Server listening at port: ${`${SERVER_PORT}`.yellow}`.green);
@@ -336,6 +367,7 @@ const spinServer = async () => {
   // --------------------------------------------------------------------------------
   return server;
 };
+
 // Returns global server instance
 spinServer()
   .then(() => {
@@ -347,6 +379,7 @@ spinServer()
     console.error('Main system error:'.red);
     console.error(error);
   });
+
 // let serverInstance = await spinServer();
 // // --------------------------------------------------------------------------------
 // const serverReloader = () => {

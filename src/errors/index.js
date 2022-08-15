@@ -29,6 +29,13 @@ export const errors = {
     message: `Invalida hlambda admin secret! Check 'x-hlambda-admin-secret'.`,
   },
 
+  ERROR_INVALID_TOKEN_PROVIDED: {
+    message: 'Invalid token provided.',
+  },
+  ERROR_FORBIDDEN: {
+    message: 'Forbidden.',
+  },
+
   // Special errors
   UNKNOWN_ERROR: {
     message: 'Unknown server error.',

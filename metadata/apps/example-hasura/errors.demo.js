@@ -12,6 +12,9 @@ export const errors = {
   SOMETHING_WENT_TERRIBLY_WRONG: {
     message: 'Description of an error message...',
   },
+  ERROR_INVALID_HOOK_SECRET: {
+    message: 'Invalid hook secret.',
+  },
 };
 
 // --- STOP SAFE TO EDIT ---

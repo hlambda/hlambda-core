@@ -73,6 +73,21 @@ export const constants = {
     description:
       'Server max allowed body size from client that express app will support. (Main usecase is Apple Subscription Notifications)',
   },
+  ENV_DISABLE_EXPRESS_BODY_PARSER: {
+    name: 'DISABLE_EXPRESS_BODY_PARSER',
+    default: 'false',
+    description: 'The Express body parser will be disabled for all routes except the ones required for Console.',
+  },
+  ENV_EXPRESS_BODY_PARSER_INCLUDE_RAW_BODY: {
+    name: 'EXPRESS_BODY_PARSER_INCLUDE_RAW_BODY',
+    default: 'false',
+    description: 'In all requests you will have req.rawBody buffer available.',
+  },
+  ENV_DISABLE_EXPRESS_COOKIE_PARSER: {
+    name: 'DISABLE_EXPRESS_COOKIE_PARSER',
+    default: 'false',
+    description: 'The Express cookie parser will be disabled for all routes except the ones required for Console.',
+  },
 
   ENV_HLAMBDA_CORS_DOMAIN: {
     name: 'HLAMBDA_CORS_DOMAIN',
@@ -183,7 +198,7 @@ export const constants = {
   // Env override blacklist
   ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES: {
     name: 'HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES',
-    default: 'ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES,HLAMBDA_DISABLE_CONSOLE,HLAMBDA_ADMIN_SECRET',
+    default: 'HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES,HLAMBDA_DISABLE_CONSOLE,HLAMBDA_ADMIN_SECRET,SERVER_PORT',
     description: 'List of the env variable names that are protected from hlambda config override.',
   },
 
