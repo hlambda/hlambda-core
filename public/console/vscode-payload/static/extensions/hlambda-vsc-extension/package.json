@@ -1,0 +1,266 @@
+{
+  "name": "hyper-lambda",
+  "displayName": "Hyper Lambda",
+  "description": "VSC Web Extension for accessing files on the hlambda instances",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.71.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onFileSystem:memfs",
+    "onFileSystem:hyper-lambda-web-default",
+    "onView:hlambda-sidebar",
+    "onCommand:hyper-lambda.setupCommand",
+    "onCommand:hyper-lambda.connectCommand",
+    "onCommand:hyper-lambda.disconnectCommand",
+    "onCommand:hyper-lambda.runShellCommand",
+    "onCommand:hyper-lambda.fetchCommand",
+    "onCommand:hyper-lambda.exportMetadataCommand",
+    "onCommand:hyper-lambda.importMetadataCommand",
+    "onCommand:hyper-lambda.getLogsCommand",
+    "onCommand:hyper-lambda.getEnvironmentsCommand",
+    "onCommand:hyper-lambda.getConstantsCommand",
+    "onCommand:hyper-lambda.reloadServerCommand",
+    "onCommand:hyper-lambda.debugCommand",
+    "onCommand:terminalHyperLambdaWeb.createAndSend",
+    "onCommand:terminalHyperLambdaWeb.createTerminal",
+    "onCommand:terminalHyperLambdaWeb.createTerminalHideFromUser",
+    "onCommand:terminalHyperLambdaWeb.createZshLoginShell",
+    "onCommand:terminalHyperLambdaWeb.dimensions",
+    "onCommand:terminalHyperLambdaWeb.dispose",
+    "onCommand:terminalHyperLambdaWeb.hide",
+    "onCommand:terminalHyperLambdaWeb.onDidChangeTerminalDimensions",
+    "onCommand:terminalHyperLambdaWeb.onDidWriteTerminalData",
+    "onCommand:terminalHyperLambdaWeb.processId",
+    "onCommand:terminalHyperLambdaWeb.registerTerminalLinkProvider",
+    "onCommand:terminalHyperLambdaWeb.sendText",
+    "onCommand:terminalHyperLambdaWeb.sendTextNoNewLine",
+    "onCommand:terminalHyperLambdaWeb.show",
+    "onCommand:terminalHyperLambdaWeb.showPreserveFocus",
+    "onCommand:terminalHyperLambdaWeb.terminals",
+    "onCommand:terminalHyperLambdaWeb.updateEnvironment",
+    "onCommand:terminalHyperLambdaWeb.clearEnvironment",
+    "onTerminalProfile:terminalHyperLambdaWeb.terminal-profile"
+  ],
+  "browser": "./dist/web/extension.js",
+  "contributes": {
+    "terminal": {
+      "profiles": [
+        {
+          "id": "terminalHyperLambdaWeb.terminal-profile",
+          "icon": "terminal",
+          "title": "Hyper Lambda - Terminal API Profile"
+        }
+      ]
+    },
+    "resourceLabelFormatters": [
+      {
+        "authority": "mount",
+        "scheme": "hyper-lambda-web",
+        "formatting": {
+          "workspaceSuffix": "Hlambda Files",
+          "label": "${path}"
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command": "terminalHyperLambdaWeb.createAndSend",
+        "title": "Hlambda Terminal: Create Terminal and Immediately Send"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.createTerminal",
+        "title": "Hlambda Terminal: Create Terminal"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.createTerminalHideFromUser",
+        "title": "Hlambda Terminal: Create Terminal (hideFromUser)"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.createZshLoginShell",
+        "title": "Hlambda Terminal: Create Terminal (zsh login shell)"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.dimensions",
+        "title": "Hlambda Terminal: Set dimensions"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.dispose",
+        "title": "Hlambda Terminal: Dispose"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.hide",
+        "title": "Hlambda Terminal: Hide"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.onDidWriteTerminalData",
+        "title": "Hlambda Terminal: Attach data listener"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.onDidChangeTerminalDimensions",
+        "title": "Hlambda Terminal: Attach dimensions listener"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.processId",
+        "title": "Hlambda Terminal: Get process ID"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.sendText",
+        "title": "Hlambda Terminal: Send Text"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.sendTextNoNewLine",
+        "title": "Hlambda Terminal: Send Text (no implied \\n)"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.show",
+        "title": "Hlambda Terminal: Show"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.showPreserveFocus",
+        "title": "Hlambda Terminal: Show (preserving focus)"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.terminals",
+        "title": "Hlambda Terminal: View terminals"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.updateEnvironment",
+        "title": "Hlambda Terminal: Update environment"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.clearEnvironment",
+        "title": "Hlambda Terminal: Clear environment"
+      },
+      {
+        "command": "terminalHyperLambdaWeb.registerTerminalLinkProvider",
+        "title": "Hlambda Terminal: Register link provider"
+      },
+      {
+        "command": "hyper-lambda.setupCommand",
+        "title": "Hlambda: Setup"
+      },
+      {
+        "command": "hyper-lambda.connectCommand",
+        "title": "Hlambda: Connect"
+      },
+      {
+        "command": "hyper-lambda.disconnectCommand",
+        "title": "Hlambda: Disconnect"
+      },
+      {
+        "command": "hyper-lambda.runShellCommand",
+        "title": "Hlambda: Run shell command"
+      },
+      {
+        "command": "hyper-lambda.fetchCommand",
+        "title": "Hlambda: Run fetch(curl) command to test Hlambda endpoint"
+      },
+      {
+        "command": "hyper-lambda.exportMetadataCommand",
+        "title": "Hlambda: Export metadata"
+      },
+      {
+        "command": "hyper-lambda.importMetadataCommand",
+        "title": "Hlambda: Import metadata"
+      },
+      {
+        "command": "hyper-lambda.getLogsCommand",
+        "title": "Hlambda: Get Logs"
+      },
+      {
+        "command": "hyper-lambda.getEnvironmentsCommand",
+        "title": "Hlambda: Get Environments"
+      },
+      {
+        "command": "hyper-lambda.getConstantsCommand",
+        "title": "Hlambda: Get Constants"
+      },
+      {
+        "command": "hyper-lambda.reloadServerCommand",
+        "title": "Hlambda: Reload Server"
+      },
+      {
+        "command": "hyper-lambda.debugCommand",
+        "title": "Hlambda: Debug"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "hlambda-sidebar-view",
+          "title": "Hlambda",
+          "icon": "media/hlambda-logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "hlambda-sidebar-view": [
+        {
+          "type": "webview",
+          "id": "hlambda-sidebar",
+          "name": "Hlambda",
+          "icon": "media/hlambda-logo.svg",
+          "contextualTitle": "Hlambda"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Basic Multi Root Sample",
+      "properties": {
+        "multiRootSample.statusColor": {
+          "type": [
+            "string"
+          ],
+          "default": "#FFFFFF",
+          "description": "Color to use for the status bar item. Can be set per workspace folder.",
+          "scope": "resource"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --extensionTestsPath=dist/web/test/suite/index.js",
+    "pretest": "npm run compile-web",
+    "vscode:prepublish": "npm run package-web",
+    "compile": "webpack --mode production",
+    "compile-web": "webpack",
+    "watch-web": "webpack --watch",
+    "package-web": "webpack --mode production --devtool hidden-source-map",
+    "lint": "eslint src --ext ts",
+    "run-in-browser": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ."
+  },
+  "devDependencies": {
+    "@tsconfig/svelte": "^3.0.0",
+    "@types/mocha": "^9.1.1",
+    "@types/uuid": "^8.3.4",
+    "@types/vscode": "^1.71.0",
+    "@types/webpack-env": "^1.17.0",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "@vscode/test-web": "^0.0.29",
+    "assert": "^2.0.0",
+    "eslint": "^8.20.0",
+    "mocha": "^10.0.0",
+    "prettier": "^2.7.1",
+    "process": "^0.11.10",
+    "svelte": "^3.31.0",
+    "svelte-check": "^1.1.23",
+    "svelte-preprocess": "^4.6.1",
+    "ts-loader": "^9.3.1",
+    "typescript": "^4.7.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "path-browserify": "^1.0.1",
+    "request-light": "^0.5.8",
+    "uuid": "^9.0.0"
+  }
+}

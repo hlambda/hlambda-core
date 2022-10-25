@@ -1,0 +1,5 @@
+/*!--------------------------------------------------------
+ * Copyright (C) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------*/(function(){var c=["vs/code/browser/workbench/workbench","require","exports","vs/workbench/workbench.web.main","vs/workbench/browser/web.factory","vs/base/common/uri"],s=function(o){for(var r=[],e=0,n=o.length;e<n;e++)r[e]=c[o[e]];return r};define(c[0],s([1,2,3,4,5]),function(o,r,e,n,d){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),function(){const t=window?.vscodeWeb?.folderUri?{trusted:!0,workspace:{folderUri:d.URI.from(window.vscodeWeb.folderUri)},open:window.vscodeWeb?.openWorkspace||(()=>Promise.resolve(!1))}:void 0;(0,e.create)(document.body,{workspaceProvider:t,...window.vscodeWeb}),n.env.getUriScheme().then(i=>window.vscodeWeb?.onWorkbenchReady?.(i))}()})}).call(this);
+
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/6d9b74a70ca9c7733b29f0456fd8195364076dda/core/vs/code/browser/workbench/workbench.js.map

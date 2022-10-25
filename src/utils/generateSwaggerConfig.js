@@ -24,42 +24,25 @@ const findExpressRoutes = (app) => {
 };
 // console.log(JSON.stringify(findExpressRoutes(app), null, 2));
 
+const CUSTOM_TAG_NAME = 'Custom';
+const HLAMBDA_CONSOLE_TAG_NAME = 'Hlambda Console';
+
 const swaggerDocumentGenerator = (app, API_DEFINITION) => {
   // const routes = findExpressRoutes(app);
-
   const routes = listEndpoints(app);
-
+  // --------------------------------------------------------------------------------
   const routesForSwagger = routes.reduce((acc, item) => {
     const { path } = item;
 
     // There is an issue with .all middlewares, it does not work, the result from 'express-list-endpoints' is empty array
     const methods = item.methods?.length === 0 ? ['GET', 'POST', 'PUT', 'DELETE'] : item.methods;
 
-    // Object.keys(methods).reduce((accMethods, methodKey) => {
-    //   const methodVal = methods[methodKey];
-    //   if (methodVal) {
-    //     accMethods[methodKey] = {
-    //       tags: ['Custom'],
-    //       parameters: (methodKey === 'POST') ? [{
-    //         in: 'body',
-    //         name: `${path} body`,
-    //         schema: {
-    //             type: 'object',
-    //         },
-    //       }] : [],
-    //       responses: {
-    //       },
-    //     };
-    //   }
-    //   return accMethods;
-    // }, {})
-
     acc[path] = {
       ...methods.reduce((accMethods, methodItem) => {
         const methodName = methodItem.toLowerCase();
         // eslint-disable-next-line no-param-reassign
         accMethods[methodName] = {
-          tags: [path.startsWith('/console/') ? 'Hlambda Console' : 'Custom'], // Anything hosted in /console/ should be Hlambda Console
+          tags: [path.startsWith('/console/') ? HLAMBDA_CONSOLE_TAG_NAME : CUSTOM_TAG_NAME], // Anything hosted in /console/ should be Hlambda Console
           security: [
             path.startsWith('/console/')
               ? {
@@ -86,6 +69,7 @@ const swaggerDocumentGenerator = (app, API_DEFINITION) => {
     };
     return acc;
   }, {});
+  // --------------------------------------------------------------------------------
 
   const swaggerObject = {
     swagger: '2.0',
@@ -101,7 +85,7 @@ const swaggerDocumentGenerator = (app, API_DEFINITION) => {
     // ],
     // "host": "localhost:8080",
     // basePath: '/api/v1.0',
-    tags: [],
+    tags: [CUSTOM_TAG_NAME, HLAMBDA_CONSOLE_TAG_NAME],
     // securityDefinitions: {
     //   jwt: {
     //     type: 'apiKey',

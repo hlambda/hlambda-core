@@ -5,6 +5,11 @@ RUN apk -U upgrade \
   git \
   openssh
 
+## Install Nginx (used for zero downtime)
+#RUN apk add nginx
+
+#COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
 RUN mkdir -p /usr/src/app
 
 # Create app directory
@@ -31,7 +36,12 @@ RUN cd ./metadata && npm install --only=production
 # At the point of building image we also want to move metadata folder with npm modules to data/metadata-examples
 RUN cp -r ./metadata/* ./data/metadata-examples
 
-CMD ["npm", "run", "start"]
+# Install PM2 globally
+RUN npm install pm2 -g
+
+# CMD ["npm", "run", "start"]
+
+CMD [ "pm2-runtime", "start", "ecosystem.config.cjs" ]
 
 # This is not ready, there are known bugs with cluster mode (state management between nodes, like path in remote shell etc...)
 #CMD ["npm", "run", "cluster-runtime"]

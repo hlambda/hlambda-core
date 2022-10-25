@@ -13,7 +13,7 @@ import express from 'express';
 import fallback from 'express-history-api-fallback';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import swaggerUi from 'swagger-ui-express';
+// import swaggerUi from 'swagger-ui-express';
 
 import path from 'path';
 import figlet from 'figlet';
@@ -25,6 +25,7 @@ import './utils/loggerOverride.js';
 import routeLanding from './routes/landing.js';
 import middlewareProtector from './routes/protector.js';
 import swaggerUIMiddlewareProtector from './routes/swaggerUIProtector.js';
+import vscodeUIMiddlewareProtector from './routes/vscodeUIProtector.js';
 
 import route404 from './routes/404.js';
 import hasuraErrorHandler from './routes/hasuraErrorHandler.js';
@@ -38,10 +39,14 @@ import swaggerCustomUIJS from './routes/swagger-custom-js-payload.js';
 import { constants, isEnvTrue, getEnvValue } from './constants/index.js';
 
 import routes from './routes/index.js';
+import getProcessInstanceId from './utils/getProcessInstanceId.js';
 import readPackageVersion from './utils/readPackageVersion.js';
 
 // Create Hlambda event emmitter
 import hlambdaEventEmitter from './emitter/index.js';
+
+// Customized npm packages
+import swaggerUi from './custom/swagger-ui-express/index.js';
 // --------------------------------------------------------------------------------
 // Set global Hlambda's event emitter
 global.hlambdaEventEmitter = hlambdaEventEmitter;
@@ -55,6 +60,16 @@ if (isEnvTrue(constants.ENV_DISABLE_COLORS_IN_STDOUT)) {
   colors.enable();
 }
 // --------------------------------------------------------------------------------
+const processInstanceId = await getProcessInstanceId()
+  .then((result) => {
+    return result;
+  })
+  .catch((error) => {
+    console.log(error);
+    return '-';
+  });
+// Assign process.processInstanceId to the id, so it can be accessed from Hlapp's
+process.processInstanceId = processInstanceId;
 // Clear the console
 console.log(`\x1Bc${Array(80 + 1).join('#').yellow}`);
 console.log(
@@ -67,7 +82,7 @@ console.log(
   )
 );
 console.log(`${Array(80 + 1).join('#').yellow}`);
-console.log(`- Node.js v${process.versions.node}!`.green);
+console.log(`- Node.js version: v${process.versions.node}`.green);
 // --------------------------------------------------------------------------------
 const spinServer = async () => {
   // --------------------------------------------------------------------------------
@@ -81,6 +96,7 @@ const spinServer = async () => {
     });
   // console.log('- Starting hlambda server!'.green);
   console.log(`- Hlambda server version: v${getPackageVersion}`.green);
+  console.log(`- Process instance id: ${processInstanceId}`.green);
   console.log(`${Array(80 + 1).join('#').yellow}`);
   // --------------------------------------------------------------------------------
   // Actually create .env.example file from constants
@@ -171,39 +187,10 @@ const spinServer = async () => {
   // --------------------------------------------------------------------------------
   // Disable Express header powered by.
   app.disable('x-powered-by');
-
-  // Add cookie parser
-  if (isEnvTrue(constants.ENV_DISABLE_EXPRESS_COOKIE_PARSER)) {
-    // We only include cookie parser for console, we need it there for Swagger UI ACL.
-    app.use('/console/', cookieParser());
-  } else {
-    // By default use it everywhere it is not expensive to have that enabled and it is really useful.
-    app.use(cookieParser());
-  }
-
-  // Add JSON body parser.
-  if (isEnvTrue(constants.ENV_DISABLE_EXPRESS_BODY_PARSER)) {
-    // Do not use body parser.
-    // We need it only on '/console/api/'
-    app.use('/console/api/', express.json());
-  } else if (isEnvTrue(constants.ENV_EXPRESS_BODY_PARSER_INCLUDE_RAW_BODY)) {
-    const rawBodySaver = (req, res, buffer, encoding) => {
-      if (buffer && buffer?.length) {
-        req.rawBody = `${buffer?.toString(encoding || 'utf8')}`;
-      }
-    };
-    app.use(
-      express.json({
-        verify: rawBodySaver,
-      })
-    );
-  } else {
-    app.use(express.json());
-  }
-
+  // --------------------------------------------------------------------------------
   // Allow cors everywhere, it make sense for this usecase, unsafe otherwise!
   app.use(cors({ origin: HLAMBDA_CORS_DOMAIN }));
-
+  // --------------------------------------------------------------------------------
   if (!HLAMBDA_DISABLE_CONSOLE) {
     if (!HLAMBDA_DISABLE_INITIAL_ROUTE_REDIRECT) {
       // Load main route (Should redirect to console)
@@ -215,6 +202,46 @@ const spinServer = async () => {
 
     // // Time all requests.
     // app.use('/console/api/', requestTimeLogger);
+  }
+  // --------------------------------------------------------------------------------
+  // Add cookie parser
+  if (isEnvTrue(constants.ENV_DISABLE_EXPRESS_COOKIE_PARSER)) {
+    // We only include cookie parser for console, we need it there for Swagger UI ACL.
+    app.use('/console/', cookieParser());
+  } else {
+    // By default use it everywhere it is not expensive to have that enabled and it is really useful.
+    app.use(cookieParser());
+  }
+
+  const SERVER_BODY_SIZE = getEnvValue(constants.ENV_SERVER_BODY_SIZE);
+  const SERVER_BODY_SIZE_ADMIN_CONSOLE = getEnvValue(constants.ENV_SERVER_BODY_SIZE_ADMIN_CONSOLE);
+  // Add JSON body parser.
+  if (isEnvTrue(constants.ENV_DISABLE_EXPRESS_BODY_PARSER)) {
+    // Do not use body parser.
+    // We need it only on '/console/api/'
+    app.use('/console/api/', express.json({ limit: SERVER_BODY_SIZE_ADMIN_CONSOLE }));
+  } else if (isEnvTrue(constants.ENV_EXPRESS_BODY_PARSER_INCLUDE_RAW_BODY)) {
+    const rawBodySaver = (req, res, buffer, encoding) => {
+      if (buffer && buffer?.length) {
+        req.rawBody = `${buffer?.toString(encoding || 'utf8')}`;
+      }
+    };
+    app.use(
+      '/console/api/',
+      express.json({
+        verify: rawBodySaver,
+        limit: SERVER_BODY_SIZE_ADMIN_CONSOLE,
+      })
+    ); // File upload has to have bigger payloads
+    app.use(
+      express.json({
+        verify: rawBodySaver,
+        limit: SERVER_BODY_SIZE,
+      })
+    ); // Normal size payload
+  } else {
+    app.use('/console/api/', express.json({ limit: SERVER_BODY_SIZE_ADMIN_CONSOLE })); // File upload has to have bigger payloads
+    app.use(express.json({ limit: SERVER_BODY_SIZE })); // Normal size payload
   }
   // --------------------------------------------------------------------------------
   if (!HLAMBDA_DISABLE_CONSOLE) {
@@ -292,6 +319,8 @@ const spinServer = async () => {
     );
   }
   if (!HLAMBDA_DISABLE_CONSOLE) {
+    // Set protector to the vscode UI
+    app.use('/console/vscode-payload/', vscodeUIMiddlewareProtector); // !!! IMPORTANT !!!
     // Before we start we need to set up protector for public swagger UI
     app.use('/console/docs/', swaggerUIMiddlewareProtector); // !!! IMPORTANT !!!
     // Define SwaggerUI options.
@@ -354,6 +383,7 @@ const spinServer = async () => {
   // --------------------------------------------------------------------------------
   // Get the PORT.
   const SERVER_PORT = getEnvValue(constants.ENV_SERVER_PORT);
+  // await sleep(10000); // Debug artefact to test zero-downtime reload
   // Start listening on a single instance.
   const server = app.listen(SERVER_PORT, () => {
     console.log(`${Array(80 + 1).join('#').yellow}`);
@@ -364,11 +394,58 @@ const spinServer = async () => {
   // For some packages like socket.io we need reference to the server instance to attach
   global.HLAMBDA_SERVER_INSTANCE = server; // Legacy
   hlambdaEventEmitter.emit('server-ready', server);
+
+  // Ref: https://stackoverflow.com/a/30585632
+  process.send = process.send || (() => {});
+  process.send('ready');
+  // --------------------------------------------------------------------------------
+  // This should not be necessary at all, because when all things are done process will exit, BUT
+  // Ref: https://github.com/Unitech/pm2/issues/3078 Issue is never solved, cluster processes will never exit in pm2, something is keeping it alive even when it is done.
+  const HLAMBDA_GRACEFUL_SHUTDOWN_DELAY_MS = parseInt(
+    getEnvValue(constants.ENV_HLAMBDA_GRACEFUL_SHUTDOWN_DELAY_MS),
+    10
+  );
+  let sigIntSignalReceived = false;
+  const startGracefulShutdownProcess = () => {
+    // Stops the server from accepting new connections and finishes existing connections.
+    if (!sigIntSignalReceived) {
+      // Notice ! NOT sigIntSignalReceived
+      // We want to subscribe to server.close only once, or else we will get ERR_SERVER_NOT_RUNNING for multiple SIGINT / SIGTERM
+      console.log('Closing server.');
+      server.close((err) => {
+        if (err) {
+          console.error(err);
+          process.exit(1);
+        }
+        console.log('Server closed.');
+        process.exitCode = 0; // It should be 0
+        // Idea behind this is that we still give a chance for background process-es to complete before killing it.
+        // Example a strange timeout or worker process calling hasura, and parsing the results.
+        console.log(`Closing after ${(HLAMBDA_GRACEFUL_SHUTDOWN_DELAY_MS / 1000).toFixed(3)}s.`);
+        // This does not make much sense, because node.js process will exit if there is nothing to do.
+        // But pm2 ecosystem.config.cjs is fixed and set to 120s kill_timeout: 120000.
+        // Maybe we should set this on pm2 to indefinite such that when process is done it closes. (Check issue https://github.com/Unitech/pm2/issues/3078)
+        setTimeout(() => {
+          console.log('Closed.');
+          process.exit(0); // We are forced to do this.
+        }, HLAMBDA_GRACEFUL_SHUTDOWN_DELAY_MS);
+      });
+    }
+    sigIntSignalReceived = true;
+  };
+  process.on('SIGINT', () => {
+    console.info('SIGINT signal received.');
+    startGracefulShutdownProcess();
+  });
+  process.on('SIGTERM', () => {
+    console.info('SIGTERM signal received.');
+    startGracefulShutdownProcess();
+  });
   // --------------------------------------------------------------------------------
   return server;
 };
 
-// Returns global server instance
+// Returns server instance
 spinServer()
   .then(() => {
     console.log(`${Array(80 + 1).join('#').yellow}`);
@@ -380,16 +457,4 @@ spinServer()
     console.error(error);
   });
 
-// let serverInstance = await spinServer();
-// // --------------------------------------------------------------------------------
-// const serverReloader = () => {
-//   setTimeout(() => {
-//     console.log('Trigger me!');
-//     serverInstance.close(async () => {
-//       console.log('Server closed');
-//       serverInstance = await spinServer();
-//       serverReloader();
-//     });
-//   }, 10000);
-// };
-// serverReloader();
+// --------------------------------------------------------------------------------

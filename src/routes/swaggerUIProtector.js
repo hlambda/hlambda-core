@@ -24,7 +24,7 @@ router.use(
       throw new Error(errors.ERROR_INVALID_TOKEN_PROVIDED);
     }
 
-    // Verify the token, proceed if everythign is all right.
+    // Verify the token, proceed if everything is all right.
     jwt.verify(token, getEnvValue(constants.ENV_HLAMBDA_ADMIN_SECRET), (err, data) => {
       if (err) {
         console.log(err);

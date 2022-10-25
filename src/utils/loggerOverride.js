@@ -73,4 +73,9 @@ console.error = (...data) => {
   }
 };
 
+export const clearBuffer = () => {
+  // Use splice to remove all items
+  buffer.splice(0, buffer.length);
+};
+
 export default buffer;

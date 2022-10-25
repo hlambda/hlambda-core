@@ -73,6 +73,11 @@ export const constants = {
     description:
       'Server max allowed body size from client that express app will support. (Main usecase is Apple Subscription Notifications)',
   },
+  ENV_SERVER_BODY_SIZE_ADMIN_CONSOLE: {
+    name: 'SERVER_BODY_SIZE_ADMIN_CONSOLE',
+    default: '50mb',
+    description: 'Server max allowed body size from client that express app will support for admin console.',
+  },
   ENV_DISABLE_EXPRESS_BODY_PARSER: {
     name: 'DISABLE_EXPRESS_BODY_PARSER',
     default: 'false',
@@ -139,6 +144,12 @@ export const constants = {
     default: '1331',
     description: 'Debounce ms time to wait before closing the server and reloading metadata.',
   },
+  ENV_HLAMBDA_GRACEFUL_SHUTDOWN_DELAY_MS: {
+    name: 'HLAMBDA_GRACEFUL_SHUTDOWN_DELAY_MS',
+    default: '0',
+    description:
+      'Graceful shutdown delay in ms, time to wait before closing the server (Used to give some time to the app to finish all processes after SIGINT).',
+  },
   ENV_HLAMBDA_LOADED_APPS_PREFIX: {
     name: 'HLAMBDA_LOADED_APPS_PREFIX',
     default: '', // We host everything to root, but we give option to user to set prefix.
@@ -154,6 +165,16 @@ export const constants = {
     name: 'HLAMBDA_PUBLIC_SWAGGER_ROUTE',
     default: '/docs',
     description: 'Flag to map swagger route, default `/docs`.',
+  },
+  ENV_HLAMBDA_SWAGGER_UI_TOKEN_EXPIRES_IN_SECONDS: {
+    name: 'HLAMBDA_SWAGGER_UI_TOKEN_EXPIRES_IN_SECONDS',
+    default: '86400', // 24 * 3600 = 1d = 86400s
+    description: 'Expires in value in seconds, time before JWT token expires and cookie is deleted on the client.',
+  },
+  ENV_HLAMBDA_VSCODE_UI_TOKEN_EXPIRES_IN_SECONDS: {
+    name: 'HLAMBDA_VSCODE_UI_TOKEN_EXPIRES_IN_SECONDS',
+    default: '86400', // 24 * 3600 = 1d = 86400s
+    description: 'Expires in value in seconds, time before JWT token expires and cookie is deleted on the client.',
   },
 
   // Loader configurations

@@ -29,16 +29,21 @@ router.post(
         return data;
       })
       .catch(() => {
-        console.log('Directory read failed!'.red);
+        // console.log(inputPath);
+        // console.log(path.resolve('./', inputPath));
+        // console.log('Directory read failed!'.red);
         return [];
       });
 
     const remap = fileData.map((item) => {
       const candidate = path.resolve('./', inputPath, item);
+      const itExists = fs.existsSync(candidate);
+      const lstat = fs.lstatSync(candidate);
       // console.log(candidate);
       return {
         name: item,
-        type: fs.existsSync(candidate) && fs.lstatSync(candidate).isDirectory() ? 'directory' : 'file',
+        type: itExists && lstat.isDirectory() ? 'directory' : 'file',
+        ...lstat,
       };
     });
 
@@ -67,6 +72,7 @@ router.post(
   })
 );
 
+// Set payload size to 10 MB for this route
 router.post(
   '/file-edit',
   asyncHandler(async (req, res) => {
