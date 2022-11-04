@@ -30,15 +30,15 @@ docker run -d -p 8081:1331 --env HLAMBDA_ADMIN_SECRET=demo --name hlambda-server
 This will:
 
 - Run a new container named: hlambda-server
-- Run latest hlambda server on host port: 8081
-- Set hlambda server admin secret to: `demo`
-- Create volume for your metadata named: hlambda_metadata
+- Run the latest hlambda server on host port: 8081
+- Set the hlambda server admin secret to: `demo`
+- Create a volume for your metadata named: hlambda_metadata
 
 Hlambda Console will be available at `http://localhost:8081`.
 
 ### Docker Compose Stack with [Hasura](https://hasura.io) <3 and Postgres <3
 
-To run Hlambda in docker stack with Postgres and [Hasura](https://hasura.io) you can run:
+To run Hlambda in the docker stack with Postgres and [Hasura](https://hasura.io) you can run:
 
 ```
   curl https://www.hlambda.io/raw/code/start/docker-compose.yaml -o docker-compose.yaml && docker compose up -d
@@ -46,8 +46,8 @@ To run Hlambda in docker stack with Postgres and [Hasura](https://hasura.io) you
 
 This will:
 
-- Download the docker-compose.yaml file (Warning: please read the contents of the YAML file to understand what you are actually running)
-- Run new docker-compose stack
+- Download the `docker-compose.yaml` file (Warning: please read the contents of the YAML file to understand what you are actually running)
+- Run a new docker-compose stack
 
 # License
 

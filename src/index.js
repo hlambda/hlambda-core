@@ -25,6 +25,7 @@ import routeLanding from './routes/landing.js';
 import middlewareProtector from './routes/protector.js';
 import swaggerUIMiddlewareProtector from './routes/swaggerUIProtector.js';
 import vscodeUIMiddlewareProtector from './routes/vscodeUIProtector.js';
+import vscodeProxy from './routes/console-vscode/unprotected-router.console-vscode-ui-proxy.js';
 
 import route404 from './routes/404.js';
 import hasuraErrorHandler from './routes/hasuraErrorHandler.js';
@@ -359,6 +360,8 @@ const spinServer = async () => {
   if (!HLAMBDA_DISABLE_CONSOLE) {
     // Set protector to the vscode UI
     app.use('/console/vscode-payload/', vscodeUIMiddlewareProtector); // !!! IMPORTANT !!!
+    app.use('/console/vscode-proxy/', vscodeUIMiddlewareProtector); // !!! IMPORTANT !!!
+    app.use('/console/vscode-proxy/', vscodeProxy);
     // Before we start we need to set up protector for public swagger UI
     app.use('/console/docs/', swaggerUIMiddlewareProtector); // !!! IMPORTANT !!!
     // Define SwaggerUI options.

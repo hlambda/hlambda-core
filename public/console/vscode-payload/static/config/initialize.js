@@ -32,11 +32,21 @@
 			serviceUrl: 'https://marketplace.visualstudio.com/_apis/public/gallery',
 			cacheUrl: 'https://vscode.blob.core.windows.net/gallery/index',
 			itemUrl: 'https://marketplace.visualstudio.com/items',
-			resourceUrlTemplate: 'https://{publisher}.vscode-unpkg.net/{publisher}/{name}/{version}/{path}',
+			// resourceUrlTemplate: 'https://{publisher}.vscode-unpkg.net/{publisher}/{name}/{version}/{path}',
+			resourceUrlTemplate:
+				window.location.origin + '/console/vscode-proxy/api/vscode-unpkg/{publisher}/{name}/{version}/{path}',
 			controlUrl: 'https://az764295.vo.msecnd.net/extensions/marketplace.json',
 			recommendationsUrl: 'https://az764295.vo.msecnd.net/extensions/workspaceRecommendations.json.gz',
 		},
-		linkProtectionTrustedDomains: ['*.github.com', '*.npmjs.com', '*.npmjs1s.com', '*.microsoft.com'],
+		linkProtectionTrustedDomains: [
+			window.location.origin,
+			'*',
+			'*.hyperlambda.com',
+			'*.github.com',
+			'*.npmjs.com',
+			'*.npmjs1s.com',
+			'*.microsoft.com',
+		],
 		extensionEnabledApiProposals: { 'ms-vscode.anycode': ['extensionsAny'] },
 	};
 	/*** end config block ***/
