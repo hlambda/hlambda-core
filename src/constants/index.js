@@ -31,6 +31,24 @@ export const constants = {
     default: 'critical,normal,verbose',
     description: 'Sets up logging level: critical, normal, verbose',
   },
+  ENV_LOG_HISTORY_BUFFER_SIZE: {
+    name: 'LOG_HISTORY_BUFFER_SIZE',
+    default: '255',
+    description:
+      'Sets up logging history buffer size. It is a max length of the history buffer, every record is the call of log function, that can contain multi-line text. (Default: 255)',
+  },
+  ENV_EXPRESS_REQUEST_LOG_HISTORY_BUFFER_SIZE: {
+    name: 'EXPRESS_REQUEST_LOG_HISTORY_BUFFER_SIZE',
+    default: '255',
+    description:
+      'Sets up logging history buffer size. It is a max length of the history buffer, every record is the record of the request. (Default: 255)',
+  },
+  ENV_ENABLE_REQUEST_HISTORY: {
+    name: 'ENABLE_REQUEST_HISTORY',
+    default: 'false',
+    description:
+      'Enables request history, useful if you want to log the last n requests and be able to replay the request. (Default: false)',
+  },
 
   // Cluster
   ENV_NODE_APP_INSTANCE: {
@@ -72,6 +90,11 @@ export const constants = {
     default: '2mb',
     description:
       'Server max allowed body size from client that express app will support. (Main usecase is Apple Subscription Notifications)',
+  },
+  ENV_SERVER_BODY_SIZE_ADMIN_CONSOLE: {
+    name: 'SERVER_BODY_SIZE_ADMIN_CONSOLE',
+    default: '50mb',
+    description: 'Server max allowed body size from client that express app will support for admin console.',
   },
   ENV_DISABLE_EXPRESS_BODY_PARSER: {
     name: 'DISABLE_EXPRESS_BODY_PARSER',
@@ -139,6 +162,12 @@ export const constants = {
     default: '1331',
     description: 'Debounce ms time to wait before closing the server and reloading metadata.',
   },
+  ENV_HLAMBDA_GRACEFUL_SHUTDOWN_DELAY_MS: {
+    name: 'HLAMBDA_GRACEFUL_SHUTDOWN_DELAY_MS',
+    default: '0',
+    description:
+      'Graceful shutdown delay in ms, time to wait before closing the server (Used to give some time to the app to finish all processes after SIGINT).',
+  },
   ENV_HLAMBDA_LOADED_APPS_PREFIX: {
     name: 'HLAMBDA_LOADED_APPS_PREFIX',
     default: '', // We host everything to root, but we give option to user to set prefix.
@@ -154,6 +183,16 @@ export const constants = {
     name: 'HLAMBDA_PUBLIC_SWAGGER_ROUTE',
     default: '/docs',
     description: 'Flag to map swagger route, default `/docs`.',
+  },
+  ENV_HLAMBDA_SWAGGER_UI_TOKEN_EXPIRES_IN_SECONDS: {
+    name: 'HLAMBDA_SWAGGER_UI_TOKEN_EXPIRES_IN_SECONDS',
+    default: '86400', // 24 * 3600 = 1d = 86400s
+    description: 'Expires in value in seconds, time before JWT token expires and cookie is deleted on the client.',
+  },
+  ENV_HLAMBDA_VSCODE_UI_TOKEN_EXPIRES_IN_SECONDS: {
+    name: 'HLAMBDA_VSCODE_UI_TOKEN_EXPIRES_IN_SECONDS',
+    default: '86400', // 24 * 3600 = 1d = 86400s
+    description: 'Expires in value in seconds, time before JWT token expires and cookie is deleted on the client.',
   },
 
   // Loader configurations

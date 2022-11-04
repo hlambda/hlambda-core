@@ -17,10 +17,14 @@ router.get(
       access: 'console-swagger-ui',
     };
 
-    const token = await jwt.sign(payload, getEnvValue(constants.ENV_HLAMBDA_ADMIN_SECRET), { expiresIn: '86400s' });
+    const expiresIn = parseInt(getEnvValue(constants.ENV_HLAMBDA_SWAGGER_UI_TOKEN_EXPIRES_IN_SECONDS), 10);
 
-    res.cookie('console-swagger-ui-access-token', token, { maxAge: 3600 * 24, httpOnly: true });
-    // res.redirect('/console/docs');
+    const token = jwt.sign(payload, getEnvValue(constants.ENV_HLAMBDA_ADMIN_SECRET), {
+      expiresIn: `${expiresIn}s`, // This is set to string in seconds. '86400s'
+    });
+
+    res.cookie('console-swagger-ui-access-token', token, { maxAge: expiresIn * 1000, httpOnly: true });
+    // res.redirect('/console/vscode-payload');
     res.send(token);
   })
 );

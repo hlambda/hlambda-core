@@ -16,7 +16,7 @@ zzzzz;
 
 router.get(
   '/share-dependency',
-  asyncHandler((req, res) => {
+  asyncHandler(async (req, res) => {
     res.send(`Prototype login works: ${DateTime.now()}`);
   })
 );

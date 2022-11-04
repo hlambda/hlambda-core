@@ -8,6 +8,7 @@ import { constants, isEnvTrue, getEnvValue } from './../constants/index.js';
 const ENV_HLAMBDA_EXPRESS_LOADER_PREFIX = getEnvValue(constants.ENV_HLAMBDA_EXPRESS_LOADER_PREFIX);
 
 const loadedRoutes = {};
+export const loadedRoutesPathsAndMetadata = {};
 
 // import route404 from './routes/404.js';
 
@@ -46,6 +47,13 @@ glob
           return undefined; // It is fine to return undefined, we will handle ?.default when loading module
           // return (import('./routes/404.js')); // Wow, just wow :D
         }); // Returns promise
+
+      loadedRoutesPathsAndMetadata[moduleId] = {
+        path: file,
+        fileName,
+        fileExtension,
+        fileBaseName,
+      };
     }
   });
 

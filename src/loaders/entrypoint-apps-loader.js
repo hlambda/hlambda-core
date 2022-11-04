@@ -8,6 +8,7 @@ import { constants, isEnvTrue, getEnvValue } from './../constants/index.js';
 const ENV_HLAMBDA_ENTRYPOINT_LOADER_PREFIX = getEnvValue(constants.ENV_HLAMBDA_ENTRYPOINT_LOADER_PREFIX);
 
 const loadedEntrypoints = {};
+export const loadedEntrypointsPathsAndMetadata = {};
 
 glob
   .sync(
@@ -43,15 +44,22 @@ glob
           console.error(error);
           return undefined; // It is fine to return undefined, we will handle ?.default when loading module
         }); // Returns promise
+
+      loadedEntrypointsPathsAndMetadata[moduleId] = {
+        path: file,
+        fileName,
+        fileExtension,
+        fileBaseName,
+      };
     }
   });
 
-console.time('Loading entrypoint'.green);
+console.time('Loading entrypoints'.green);
 // Resolve all promises before exporting...
 const resolvedLoadedEntrypoints = _.zipObject(
   _.keys(loadedEntrypoints),
   await Promise.all(_.values(loadedEntrypoints))
 );
-console.timeEnd('Loading entrypoint'.green);
+console.timeEnd('Loading entrypoints'.green);
 
 export default resolvedLoadedEntrypoints;

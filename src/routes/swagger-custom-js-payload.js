@@ -21,7 +21,6 @@ window.addEventListener('load', function () {
 
   if (typeof secret === 'undefined' || secret === null) {
     try {
-      console.log(localStorage.getItem('console:adminSecret'));
       secret = JSON.parse(localStorage.getItem('console:adminSecret'));
     } catch(error) {
       console.log('[custom-swagger-js]', error);

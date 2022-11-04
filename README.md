@@ -7,19 +7,19 @@
 
 ## What is Hlambda (/hlæmdə/) [Hyper Lambda]
 
-Hlambda is ECMAScript meta API service. That means that it offers simple ways to deploy ECMAScript code to local or remote servers.
+Hlambda is ECMAScript meta API service. It offers simple ways to deploy ECMAScript code to local or remote servers.
 
 <a href="https://hub.docker.com/r/hlambda/hlambda-core" title="Docker Image">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://www.hlambda.io/assets/hlambda-logo-light.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://www.hlambda.io/assets/hlambda-logo-dark.png">
-  <img alt="Hlambda Banner" src="https://www.hlambda.io/assets/hlambda-logo-dark.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hlambda/hlambda-core/master/public/static/images/hlambda-logo-banner-light-blue.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/hlambda/hlambda-core/master/public/static/images/hlambda-logo-banner-blue.png">
+  <img alt="Hlambda Banner" src="https://raw.githubusercontent.com/hlambda/hlambda-core/master/public/static/images/hlambda-logo-banner-blue.png">
 </picture>
 
 </a>
 
-It is the implementation of the idea to load your ECMAScript code as configuration (metadata). With Hlambda you can easily create a microservice that can load arbitrary code configuration.
+It is the implementation of the idea to load your ECMAScript code as configuration (metadata). With Hlambda you can easily create a microservice that can load arbitrary code configurations.
 
 The main use case was to implement a stateless REST microservice that will run Hasura custom actions in a separate container, containing any custom business logic.
 

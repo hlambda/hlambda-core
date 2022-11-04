@@ -2,8 +2,9 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 
 import fs from 'fs';
+import fse from 'fs-extra';
 import path from 'path';
-import { readFile, writeFile, readdir } from 'fs/promises';
+import { readFile, writeFile, readdir, mkdir } from 'fs/promises';
 
 // Define errors
 import errors from './../../errors/index.js';
@@ -29,16 +30,21 @@ router.post(
         return data;
       })
       .catch(() => {
-        console.log('Directory read failed!'.red);
+        // console.log(inputPath);
+        // console.log(path.resolve('./', inputPath));
+        // console.log('Directory read failed!'.red);
         return [];
       });
 
     const remap = fileData.map((item) => {
       const candidate = path.resolve('./', inputPath, item);
+      const itExists = fs.existsSync(candidate);
+      const lstat = fs.lstatSync(candidate);
       // console.log(candidate);
       return {
         name: item,
-        type: fs.existsSync(candidate) && fs.lstatSync(candidate).isDirectory() ? 'directory' : 'file',
+        type: itExists && lstat.isDirectory() ? 'directory' : 'file',
+        ...lstat,
       };
     });
 
@@ -67,6 +73,7 @@ router.post(
   })
 );
 
+// Set payload size to 10 MB for this route
 router.post(
   '/file-edit',
   asyncHandler(async (req, res) => {
@@ -93,6 +100,39 @@ router.post(
       });
 
     res.send(fileDataAfterWrite);
+  })
+);
+
+router.post(
+  '/create-directory',
+  asyncHandler(async (req, res) => {
+    const inputPath = req?.body?.path;
+
+    const result = await mkdir(inputPath, { recursive: true });
+
+    res.send(result);
+  })
+);
+
+router.post(
+  '/files-move',
+  asyncHandler(async (req, res) => {
+    const inputPathOld = req?.body?.pathOld;
+    const inputPathNew = req?.body?.pathNew;
+
+    await fse
+      .move(path.resolve(process.cwd(), inputPathOld), path.resolve(process.cwd(), inputPathNew), {
+        recursive: true,
+      })
+      .then((data) => {
+        return data;
+      })
+      .catch((error) => {
+        console.error("[metadata-reset] ERROR: can't move");
+        console.error(error);
+      });
+
+    res.send('moved');
   })
 );
 

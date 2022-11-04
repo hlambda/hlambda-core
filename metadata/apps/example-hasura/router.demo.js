@@ -14,12 +14,11 @@ import errors from './errors.demo.js';
 const router = express.Router();
 
 router.use('/hasura-*', hasuraRequestLogger);
-
 router.use('/hasura-*', hasuraWebHookProtector);
 
 router.post(
   '/hasura-version',
-  asyncHandler((req, res) => {
+  asyncHandler(async (req, res) => {
     console.log(`${process.env.APP_VERSION}`);
     res.json({
       version: `${process.env.APP_VERSION}`,
@@ -29,7 +28,7 @@ router.post(
 
 router.post(
   '/hasura-version-error',
-  asyncHandler((req, res) => {
+  asyncHandler(async (req, res) => {
     throw new Error(errors.SOMETHING_WENT_TERRIBLY_WRONG);
     // res.json({
     //   version: `${process.env.APP_VERSION}`,

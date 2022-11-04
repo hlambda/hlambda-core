@@ -1,3 +1,16 @@
+# Release 0.3.0
+
+- Added zero downtime reload.
+- Added fully featured vscode for editing metadata in Console UI
+- Added pre-installed Hlambda extension to custom vscode build.
+- Added pre-installed Hasura extension to custom vscode build.
+- Added pre-installed Color-Vision extension to custom vscode build.
+- Updated Console UI. Home page now shows both logs and Swagger UI.
+- Added support for saving request history, added replay option for the requests saved in request history.
+- Replaced terminal with vscode pseudo terminal.
+- Updated to new Hlambda logo.
+- Updated favicon.
+
 # Release 0.2.0
 
 - Updated Console UI (Logs: Auto scroll snap, Metadata: Action history dates)
