@@ -13,7 +13,7 @@ const fetchCommand = async () => {
 	const instanceOfCommand = createInstance();
 
 	const commandExecutionInstance = `${instanceOfCommand.getInstance()}`;
-	console.log(`[${instanceOfExtension}|fetchCommand]\nExecuted!\n<${commandExecutionInstance}>`);
+	console.log(`[${instanceOfExtension} - fetchCommand]\nExecuted!\n<${commandExecutionInstance}>`);
 
 	const context = getExtensionContext();
 
@@ -26,13 +26,22 @@ const fetchCommand = async () => {
 
 	// We need at least one connection
 	if (connectionsUrls.length > 0) {
-		const selectedConnectionUrl = await vscode.window.showQuickPick(connectionsUrls, {
-			placeHolder: 'Select Hlambda Server you want to issue the command!',
-		});
+		let selectedConnectionUrl: string | undefined = connectionsUrls[0];
+
+		if (connectionsUrls.length > 1) {
+			// We need to ask, it is not known
+			selectedConnectionUrl = await vscode.window.showQuickPick(connectionsUrls, {
+				placeHolder: 'Select Hlambda Server you want to issue the command!',
+			});
+		}
 
 		console.log('selectedConnectionUrl', selectedConnectionUrl);
 
-		// console.log(conn);
+		if (typeof selectedConnectionUrl === 'undefined') {
+			vscode.window.showInformationMessage(`Error... Unknown server URL.`);
+			return;
+		}
+
 		const urlPart = await vscode.window.showInputBox({
 			ignoreFocusOut: true,
 			placeHolder: 'Url',
@@ -41,7 +50,7 @@ const fetchCommand = async () => {
 			value: 'demo',
 		});
 
-		const runRequest = async (): Promise<String | undefined> => {
+		const runRequest = async (): Promise<string | undefined> => {
 			console.log(`Calling: ${selectedConnectionUrl}/${urlPart}`);
 			const response = await fetch(`${selectedConnectionUrl}/${urlPart}`, {
 				method: method,
@@ -56,12 +65,22 @@ const fetchCommand = async () => {
 				return resultRequestText;
 			}
 			console.log(resultRequestText);
-			return undefined;
+			return resultRequestText;
 		};
-		const result = await runRequest();
-		vscode.window.showInformationMessage(
-			`[${instanceOfExtension}|reloadServerCommand]\nSuccess!\n<${commandExecutionInstance}>\n\n${result}`
-		);
+		const response = await runRequest();
+		// vscode.window.showInformationMessage(
+		// 	`[${instanceOfExtension} - fetchCommand]\nSuccess!\n<${commandExecutionInstance}>\n\n${response}`
+		// );
+
+		// const newUri = vscode.Uri.parse('hyper-lambda-web-virtual-document:' + response);
+		// const doc = await vscode.workspace.openTextDocument(newUri); // calls back into the provider
+		// await vscode.window.showTextDocument(doc, { preview: false });
+
+		const doc = await vscode.workspace.openTextDocument({
+			content: response,
+			language: 'text',
+		});
+		await vscode.window.showTextDocument(doc);
 	}
 };
 

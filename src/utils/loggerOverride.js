@@ -1,6 +1,6 @@
 import { format } from 'util';
 
-import { constants, isEnvTrue } from './../constants/index.js';
+import { constants, isEnvTrue, getEnvValue } from './../constants/index.js';
 
 const squashArgsArrayToConsoleIntoString = (...data) => {
   return [...data]
@@ -31,8 +31,9 @@ console.log = (...data) => {
 
   if (shouldOutputJSON) {
     log({
-      timestamp: Date.now(),
-      message: textResult,
+      detail: textResult,
+      timestamp: new Date().toISOString(), // Date.now(),
+      level: 'info',
       type: 'stdout',
     });
   } else {
@@ -42,7 +43,7 @@ console.log = (...data) => {
   // Buffer should not be affected by the shouldOutputJSON
   buffer.push(textResult);
 
-  if (buffer.length >= 255) {
+  if (buffer.length >= parseInt(getEnvValue(constants.ENV_LOG_HISTORY_BUFFER_SIZE), 10)) {
     buffer.splice(0, 1);
   }
 };
@@ -57,8 +58,9 @@ console.error = (...data) => {
 
   if (shouldOutputJSON) {
     error({
-      timestamp: Date.now(),
-      message: textResult,
+      detail: textResult,
+      timestamp: new Date().toISOString(), // Date.now(),
+      level: 'error',
       type: 'stderr',
     });
   } else {
@@ -68,7 +70,7 @@ console.error = (...data) => {
   // Buffer should not be affected by the shouldOutputJSON
   buffer.push(textResult);
 
-  if (buffer.length >= 255) {
+  if (buffer.length >= parseInt(getEnvValue(constants.ENV_LOG_HISTORY_BUFFER_SIZE), 10)) {
     buffer.splice(0, 1);
   }
 };

@@ -1,5 +1,264 @@
 import * as vscode from 'vscode';
 
+import createAPIClient from './../client';
+
+const splice = (originalString: string, idx: number, rem: number, insertString: string) => {
+	return originalString.slice(0, idx === 0 ? 0 : idx) + insertString + originalString.slice(idx + Math.abs(rem));
+};
+
+export class RemoteRESTTerminal {
+	private static instance: RemoteRESTTerminal | null = null;
+	private readonly disposable: vscode.Disposable | undefined;
+	public clientAPI;
+	public writeEmitter = new vscode.EventEmitter<string>();
+	public pty;
+	public content;
+	public defaultLine;
+	public keys;
+	public actions;
+	public cwd: string = './metadata/'; // By default we want to be here
+	public url: string = '';
+	public history: string[] = ['']; // Important to have no command ''
+	public historyIndex: number = 0;
+	public pointerIndex: number = 0; // Location of the pointer in content
+	public debug: boolean = false;
+	// --------------------------------------------------------------------------------
+	private formatText = (text: string) => `\r${text.split(/(\r?\n)/g).join('\r')}\r`;
+	// --------------------------------------------------------------------------------
+	constructor(url: string, adminSecret: string, showTerminal: boolean = false) {
+		this.url = url;
+		this.defaultLine = ''; // '→ ';
+		this.keys = {
+			enter: '\r',
+			tab: '\t',
+			backspace: '\x7f',
+			leftArrow: '\x1b[D',
+			rightArrow: '\x1b[C',
+			upArrow: '\x1b[A',
+			downArrow: '\x1b[B',
+		};
+		this.actions = {
+			cursorBack: '\x1b[D',
+			deleteChar: '\x1b[P',
+			insertChar: '\x1b[1@',
+			clear: '\x1b[2J\x1b[3J\x1b[;H',
+			clearLine: '\x1b[2K\r', // \r is important
+		};
+		this.content = this.defaultLine;
+
+		this.clientAPI = createAPIClient(url, adminSecret);
+		this.pty = {
+			onDidWrite: this.writeEmitter.event,
+			open: async () => {
+				// Get the cwd from start and log it into our internal cwd.
+				const resultCWD = await this.clientAPI.getCWD('./');
+				this.debug && console.log('cwd', resultCWD?.validPath);
+				this.cwd = resultCWD?.validPath ?? '';
+
+				this.writeEmitter.fire(`\n\rHλ ${this.url} | ${this.cwd} #\n\r`);
+			},
+			close: () => {},
+			handleInput: async (chars: string) => {
+				switch (chars) {
+					case this.keys.tab:
+						return;
+					case this.keys.enter:
+						// preserve the run command line for history
+						this.writeEmitter.fire(`\r${this.content}\r\n`);
+						// trim off leading default prompt
+						const command = this.content.slice(this.defaultLine.length);
+
+						try {
+							// run the command
+							console.log('EXECUTING:', command);
+
+							if (command === '') {
+								this.content = '';
+								this.writeEmitter.fire(this.actions.clear);
+								this.writeEmitter.fire(`\n\rHλ ${this.url} | ${this.cwd} #\n\r`);
+								this.historyIndex = 0;
+								this.pointerIndex = 0;
+								return;
+							}
+
+							this.history.push(command);
+							this.historyIndex = this.history.length - 1; // Set index to the last item in history
+
+							// Check for special cases
+							if (['clear', 'cls', 'exit', 'quit'].includes(command.toLowerCase())) {
+								this.content = '';
+								this.writeEmitter.fire(this.actions.clear);
+								this.writeEmitter.fire(`\n\rHλ ${this.url} | ${this.cwd} #\n\r`);
+								this.historyIndex = 0;
+								this.pointerIndex = 0;
+								return;
+							}
+
+							if (['reload'].includes(command.toLowerCase())) {
+								const result = await this.clientAPI.reloadServer();
+								console.log(result);
+								this.content = '';
+								this.writeEmitter.fire(`Hλ ${this.url} | Server reload triggered!\n\r`);
+								this.historyIndex = 0;
+								this.pointerIndex = 0;
+								return;
+							}
+
+							if (['restart'].includes(command.toLowerCase())) {
+								const result = await this.clientAPI.restartServer();
+								console.log(result);
+								this.content = '';
+								this.writeEmitter.fire(`Hλ ${this.url} | Server restart triggered!\n\r`);
+								this.historyIndex = 0;
+								this.pointerIndex = 0;
+								return;
+							}
+
+							if (['history'].includes(command.toLowerCase())) {
+								this.content = '';
+								this.writeEmitter.fire(this.history.join('\n\r'));
+								this.writeEmitter.fire(`\n\rHλ ${this.url} | ${this.cwd} #\n\r`);
+								this.historyIndex = 0;
+								this.pointerIndex = 0;
+								return;
+							}
+
+							if (['history clear'].includes(command.toLowerCase())) {
+								this.content = '';
+								this.history = [];
+								this.writeEmitter.fire(this.history.join('\n\r'));
+								this.writeEmitter.fire(`\n\rHλ ${this.url} | ${this.cwd} #\n\r`);
+								this.historyIndex = 0;
+								this.pointerIndex = 0;
+								return;
+							}
+
+							// Check for cd
+							if (command.toLowerCase().startsWith('cd')) {
+								const t = command.match(/cd\s(.+)/);
+								// Check for candidate
+								if (t && t[1]) {
+									const results = await this.clientAPI.getCWD(t[1], this.cwd);
+									if (results?.validPath && results?.isValidCandidate) {
+										this.cwd = results?.validPath;
+									}
+								}
+							} else {
+								console.log('cwd', this.cwd);
+
+								const result = await this.clientAPI.runCommand(command, this.cwd);
+
+								const stdout: string = result?.data ?? '';
+								const stderr: any = undefined;
+
+								console.log('stdout');
+								console.log(stdout);
+
+								if (stdout) {
+									this.writeEmitter.fire(this.formatText(stdout));
+									// this.writeEmitter.fire(stdout);
+								}
+
+								if (stderr && stderr.length) {
+									this.writeEmitter.fire(stderr);
+								}
+							}
+						} catch (error: any) {
+							this.writeEmitter.fire(`\r${error?.message ?? ''}`);
+						}
+						// Important this cleans up the content.
+						this.content = this.defaultLine;
+						this.writeEmitter.fire(`\n\rHλ ${this.url} | ${this.cwd} #\n\r`);
+						this.historyIndex = 0;
+						this.pointerIndex = 0;
+					case this.keys.backspace:
+						if (this.content.length <= 0) {
+							return;
+						}
+						if (this.pointerIndex <= 0) {
+							return;
+						}
+
+						// remove last character
+						// this.content = this.content.substr(0, this.content.length - 1);
+						this.debug && console.log('new content before backspace:', this.content, this.pointerIndex);
+						this.content = splice(this.content, this.pointerIndex - 1, 1, '');
+						this.pointerIndex -= 1;
+						this.debug && console.log('new content after backspace:', this.content, this.pointerIndex);
+
+						this.writeEmitter.fire(this.actions.cursorBack);
+						this.writeEmitter.fire(this.actions.deleteChar);
+						return;
+					case this.keys.upArrow:
+						// Write history
+						this.historyIndex = (this.history.length + (this.historyIndex - 1)) % this.history.length;
+						this.content = this.history[this.historyIndex];
+						this.writeEmitter.fire(this.actions.clearLine);
+						this.writeEmitter.fire(this.content);
+						this.pointerIndex = this.content.length;
+						return;
+					case this.keys.downArrow:
+						// Write history
+						this.historyIndex = (this.historyIndex + 1) % this.history.length;
+						this.content = this.history[this.historyIndex];
+						this.writeEmitter.fire(this.actions.clearLine);
+						this.writeEmitter.fire(this.content);
+						this.pointerIndex = this.content.length;
+						return;
+					case this.keys.leftArrow:
+						if (this.pointerIndex > 0) {
+							this.pointerIndex -= 1;
+							this.writeEmitter.fire(chars); // Only emit but do not paste char, and change pointer index.
+						}
+						this.debug && console.log('index at', this.pointerIndex);
+						return;
+					case this.keys.rightArrow:
+						if (this.pointerIndex < this.content.length) {
+							this.pointerIndex += 1;
+							this.writeEmitter.fire(chars); // Only emit but do not paste char, and change pointer index.
+						}
+						this.debug && console.log('index at', this.pointerIndex);
+						return;
+					default: // Instead of writing to the end write at the index.
+						// This will help if user paste
+						// Consider that char can be a paste, and can contain multiple chars
+
+						// TODO: Note: There is a possible issue if someone pastes special characters, what should we do. (never tested it, maybe it is not even the issue)
+
+						// Typing a new character
+						this.debug && console.log('typed char', chars, 'at index', this.pointerIndex);
+						this.content = splice(this.content, this.pointerIndex, 0, chars);
+						this.debug && console.log('new content:', this.content);
+						this.pointerIndex += chars.length;
+
+						//this.writeEmitter.fire(this.actions.insertChar); // Ultra important
+						this.writeEmitter.fire(`\x1b[${chars.length}@`);
+						this.writeEmitter.fire(chars);
+				}
+			},
+		};
+
+		// Create new terminal
+		const terminal = vscode.window.createTerminal({
+			name: `Pseudo Terminal - Hlambda server ${this.url}`,
+			pty: this.pty,
+		});
+		// vscode.window.showInformationMessage('Terminal successfuly created');
+
+		if (showTerminal) {
+			terminal.show();
+		} else {
+			// terminal.hide();
+		}
+	}
+
+	dispose() {
+		this.disposable?.dispose();
+	}
+	// --------------------------------------------------------------------------------
+	async stat(uri: vscode.Uri) {}
+}
+
 export function activateTerminal(context: vscode.ExtensionContext) {
 	let NEXT_TERM_ID = 1;
 
@@ -9,83 +268,16 @@ export function activateTerminal(context: vscode.ExtensionContext) {
 	vscode.window.onDidOpenTerminal((terminal) => {
 		console.log('Terminal opened. Total count: ' + (<any>vscode.window).terminals.length);
 	});
-	vscode.window.onDidOpenTerminal((terminal: vscode.Terminal) => {
-		vscode.window.showInformationMessage(`onDidOpenTerminal, name: ${terminal.name}`);
-	});
 
 	// vscode.window.onDidChangeActiveTerminal
 	vscode.window.onDidChangeActiveTerminal((e) => {
 		console.log(`Active terminal changed, name=${e ? e.name : 'undefined'}`);
 	});
 
-	const writeEmitter = new vscode.EventEmitter<string>();
-
-	const defaultLine = '→ ';
-	const keys = {
-		enter: '\r',
-		backspace: '\x7f',
-	};
-	const actions = {
-		cursorBack: '\x1b[D',
-		deleteChar: '\x1b[P',
-		clear: '\x1b[2J\x1b[3J\x1b[;H',
-	};
-	let content = defaultLine;
-
-	// cleanup inconsitent line breaks
-	const formatText = (text: string) => `\r${text.split(/(\r?\n)/g).join('\r')}\r`;
-
-	const pty = {
-		onDidWrite: writeEmitter.event,
-		open: () => writeEmitter.fire(content),
-		close: () => {},
-		handleInput: async (char: string) => {
-			switch (char) {
-				case keys.enter:
-					// preserve the run command line for history
-					writeEmitter.fire(`\r${content}\r\n`);
-					// trim off leading default prompt
-					const command = content.slice(defaultLine.length);
-					try {
-						// run the command
-						console.log('EXECUTING:', command);
-						const stdout = 'BRAVO!';
-						const stderr: any = undefined;
-
-						if (stdout) {
-							// writeEmitter.fire(formatText(stdout));
-							writeEmitter.fire(stdout);
-						}
-
-						if (stderr && stderr.length) {
-							writeEmitter.fire(formatText(stderr));
-						}
-					} catch (error: any) {
-						writeEmitter.fire(`\r${formatText(error?.message ?? '')}`);
-					}
-					content = defaultLine;
-					writeEmitter.fire(`\r${content}`);
-				case keys.backspace:
-					if (content.length <= defaultLine.length) {
-						return;
-					}
-					// remove last character
-					content = content.substr(0, content.length - 1);
-					writeEmitter.fire(actions.cursorBack);
-					writeEmitter.fire(actions.deleteChar);
-					return;
-				default:
-					// typing a new character
-					content += char;
-					writeEmitter.fire(char);
-			}
-		},
-	};
-
 	// vscode.window.createTerminal
 	context.subscriptions.push(
 		vscode.commands.registerCommand('terminalHyperLambdaWeb.createTerminal', () => {
-			vscode.window.createTerminal({ name: `Ext Terminal #${NEXT_TERM_ID++}`, pty });
+			vscode.window.createTerminal({ name: `Ext Terminal #${NEXT_TERM_ID++}` });
 			vscode.window.showInformationMessage('Hello World 2!');
 		})
 	);

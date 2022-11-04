@@ -125,6 +125,12 @@
 				},
 			},
 			{
+				id: 'hyper-lambda.commands.vscode.getBrowserHash',
+				handler() {
+					return window.location.hash;
+				},
+			},
+			{
 				id: 'hyper-lambda.commands.vscode.getBrowserOrigin',
 				handler() {
 					return window.location.origin;
@@ -163,6 +169,8 @@
 			'telemetry.telemetryLevel': 'off',
 			'workbench.startupEditor': 'readme',
 			'files.autoSave': 'off',
+			'editor.defaultFormatter': 'esbenp.prettier-vscode',
+			'editor.formatOnSave': true,
 			'anycode.language.features': {
 				completions: true,
 				definitions: true,

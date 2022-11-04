@@ -14,36 +14,17 @@
     "onFileSystem:memfs",
     "onFileSystem:hyper-lambda-web-default",
     "onView:hlambda-sidebar",
-    "onCommand:hyper-lambda.setupCommand",
     "onCommand:hyper-lambda.connectCommand",
     "onCommand:hyper-lambda.disconnectCommand",
     "onCommand:hyper-lambda.runShellCommand",
     "onCommand:hyper-lambda.fetchCommand",
-    "onCommand:hyper-lambda.exportMetadataCommand",
-    "onCommand:hyper-lambda.importMetadataCommand",
     "onCommand:hyper-lambda.getLogsCommand",
     "onCommand:hyper-lambda.getEnvironmentsCommand",
     "onCommand:hyper-lambda.getConstantsCommand",
     "onCommand:hyper-lambda.reloadServerCommand",
-    "onCommand:hyper-lambda.debugCommand",
-    "onCommand:terminalHyperLambdaWeb.createAndSend",
     "onCommand:terminalHyperLambdaWeb.createTerminal",
-    "onCommand:terminalHyperLambdaWeb.createTerminalHideFromUser",
-    "onCommand:terminalHyperLambdaWeb.createZshLoginShell",
-    "onCommand:terminalHyperLambdaWeb.dimensions",
-    "onCommand:terminalHyperLambdaWeb.dispose",
-    "onCommand:terminalHyperLambdaWeb.hide",
-    "onCommand:terminalHyperLambdaWeb.onDidChangeTerminalDimensions",
-    "onCommand:terminalHyperLambdaWeb.onDidWriteTerminalData",
-    "onCommand:terminalHyperLambdaWeb.processId",
-    "onCommand:terminalHyperLambdaWeb.registerTerminalLinkProvider",
-    "onCommand:terminalHyperLambdaWeb.sendText",
-    "onCommand:terminalHyperLambdaWeb.sendTextNoNewLine",
     "onCommand:terminalHyperLambdaWeb.show",
-    "onCommand:terminalHyperLambdaWeb.showPreserveFocus",
-    "onCommand:terminalHyperLambdaWeb.terminals",
-    "onCommand:terminalHyperLambdaWeb.updateEnvironment",
-    "onCommand:terminalHyperLambdaWeb.clearEnvironment",
+    "onCommand:terminalHyperLambdaWeb.hide",
     "onTerminalProfile:terminalHyperLambdaWeb.terminal-profile"
   ],
   "browser": "./dist/web/extension.js",
@@ -69,80 +50,20 @@
     ],
     "commands": [
       {
-        "command": "terminalHyperLambdaWeb.createAndSend",
-        "title": "Hlambda Terminal: Create Terminal and Immediately Send"
-      },
-      {
         "command": "terminalHyperLambdaWeb.createTerminal",
         "title": "Hlambda Terminal: Create Terminal"
-      },
-      {
-        "command": "terminalHyperLambdaWeb.createTerminalHideFromUser",
-        "title": "Hlambda Terminal: Create Terminal (hideFromUser)"
-      },
-      {
-        "command": "terminalHyperLambdaWeb.createZshLoginShell",
-        "title": "Hlambda Terminal: Create Terminal (zsh login shell)"
-      },
-      {
-        "command": "terminalHyperLambdaWeb.dimensions",
-        "title": "Hlambda Terminal: Set dimensions"
-      },
-      {
-        "command": "terminalHyperLambdaWeb.dispose",
-        "title": "Hlambda Terminal: Dispose"
       },
       {
         "command": "terminalHyperLambdaWeb.hide",
         "title": "Hlambda Terminal: Hide"
       },
       {
-        "command": "terminalHyperLambdaWeb.onDidWriteTerminalData",
-        "title": "Hlambda Terminal: Attach data listener"
-      },
-      {
-        "command": "terminalHyperLambdaWeb.onDidChangeTerminalDimensions",
-        "title": "Hlambda Terminal: Attach dimensions listener"
-      },
-      {
-        "command": "terminalHyperLambdaWeb.processId",
-        "title": "Hlambda Terminal: Get process ID"
-      },
-      {
-        "command": "terminalHyperLambdaWeb.sendText",
-        "title": "Hlambda Terminal: Send Text"
-      },
-      {
-        "command": "terminalHyperLambdaWeb.sendTextNoNewLine",
-        "title": "Hlambda Terminal: Send Text (no implied \\n)"
-      },
-      {
         "command": "terminalHyperLambdaWeb.show",
         "title": "Hlambda Terminal: Show"
       },
       {
-        "command": "terminalHyperLambdaWeb.showPreserveFocus",
-        "title": "Hlambda Terminal: Show (preserving focus)"
-      },
-      {
         "command": "terminalHyperLambdaWeb.terminals",
         "title": "Hlambda Terminal: View terminals"
-      },
-      {
-        "command": "terminalHyperLambdaWeb.updateEnvironment",
-        "title": "Hlambda Terminal: Update environment"
-      },
-      {
-        "command": "terminalHyperLambdaWeb.clearEnvironment",
-        "title": "Hlambda Terminal: Clear environment"
-      },
-      {
-        "command": "terminalHyperLambdaWeb.registerTerminalLinkProvider",
-        "title": "Hlambda Terminal: Register link provider"
-      },
-      {
-        "command": "hyper-lambda.setupCommand",
-        "title": "Hlambda: Setup"
       },
       {
         "command": "hyper-lambda.connectCommand",
@@ -161,14 +82,6 @@
         "title": "Hlambda: Run fetch(curl) command to test Hlambda endpoint"
       },
       {
-        "command": "hyper-lambda.exportMetadataCommand",
-        "title": "Hlambda: Export metadata"
-      },
-      {
-        "command": "hyper-lambda.importMetadataCommand",
-        "title": "Hlambda: Import metadata"
-      },
-      {
         "command": "hyper-lambda.getLogsCommand",
         "title": "Hlambda: Get Logs"
       },
@@ -185,8 +98,8 @@
         "title": "Hlambda: Reload Server"
       },
       {
-        "command": "hyper-lambda.debugCommand",
-        "title": "Hlambda: Debug"
+        "command": "hyper-lambda.connectToHasuraFromEnvData",
+        "title": "Hlambda: Connect to Hasura from environment data"
       }
     ],
     "viewsContainers": {

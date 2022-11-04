@@ -28,6 +28,9 @@ export const errors = {
   ERROR_INVALID_HLAMBDA_ADMIN_SECRET: {
     message: `Invalida hlambda admin secret! Check 'x-hlambda-admin-secret'.`,
   },
+  ERROR_INVALID_REQUEST_HISTORY_ID: {
+    message: `Invalida request history id.`,
+  },
 
   ERROR_INVALID_TOKEN_PROVIDED: {
     message: 'Invalid token provided.',

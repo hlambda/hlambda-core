@@ -15,7 +15,7 @@ Hlambda is easy to manage, meta ECMAScript API server, with console UI and CLI t
 
 Your ECMAScript metadata payload is the configuration of the (Hyper Lambda) Hlambda Server.
 
-![Hlambda Banner](https://www.hlambda.io/assets/hlambda-logo-dark.png)
+![Hlambda Banner](https://raw.githubusercontent.com/hlambda/hlambda-core/master/public/static/images/hlambda-logo-banner-blue.png)
 
 # How to use this image
 

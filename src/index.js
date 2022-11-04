@@ -13,7 +13,6 @@ import express from 'express';
 import fallback from 'express-history-api-fallback';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-// import swaggerUi from 'swagger-ui-express';
 
 import path from 'path';
 import figlet from 'figlet';
@@ -30,6 +29,7 @@ import vscodeUIMiddlewareProtector from './routes/vscodeUIProtector.js';
 import route404 from './routes/404.js';
 import hasuraErrorHandler from './routes/hasuraErrorHandler.js';
 import healthzRouter from './routes/health/public-router.healthz.js';
+import expressRequestHistoryRecorderMiddleware from './utils/expressRequestHistoryRecorderMiddleware.js';
 
 import generateDotEnvFileFromConsts from './utils/generateDotEnvFileFromConsts.js';
 import swaggerDarkThemeCss from './utils/swaggerDarkThemeCss.js';
@@ -41,6 +41,7 @@ import { constants, isEnvTrue, getEnvValue } from './constants/index.js';
 import routes from './routes/index.js';
 import getProcessInstanceId from './utils/getProcessInstanceId.js';
 import readPackageVersion from './utils/readPackageVersion.js';
+import execScriptCommand from './utils/execScriptCommand.js';
 
 // Create Hlambda event emmitter
 import hlambdaEventEmitter from './emitter/index.js';
@@ -116,59 +117,88 @@ const spinServer = async () => {
   );
   const ENV_HLAMBDA_CONFIGURATION_LOADER_PREFIX = getEnvValue(constants.ENV_HLAMBDA_CONFIGURATION_LOADER_PREFIX);
   // - Load configs
-  console.log(`Loading apps '${ENV_HLAMBDA_CONFIGURATION_LOADER_PREFIX}' configs...`.yellow);
+  console.log(`Loading apps '${ENV_HLAMBDA_CONFIGURATION_LOADER_PREFIX}' configurations...`.yellow);
   const fileNameConfig = path.resolve('./src/loaders/config-apps-loader.js');
-  const { default: userConfigs } = await import(`file:///${fileNameConfig}`); // Notice the default
+  const { default: userConfigs, loadedConfigsPathsAndMetadata } = await import(`file:///${fileNameConfig}`); // Notice the default
 
-  console.log(`Protected env variables: ${ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES.split(',').join(', ')}`.green);
+  console.log(`${Array(80 + 1).join('-').yellow}`);
+  console.log('Processing configurations and environment variables...'.yellow);
+  console.log(
+    `Protected environment variables are:`.green,
+    `${ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES.split(',').join(', ')}`.yellow
+  );
 
   for (const config in userConfigs) {
     if ({}.hasOwnProperty.call(userConfigs, config)) {
       const singleAppConfig = userConfigs[config]; // Single config object of yaml parsed app config
       const newSoftEnv = singleAppConfig?.env ?? {};
-      for (const [key, value] of Object.entries(newSoftEnv)) {
-        if (!Object.prototype.hasOwnProperty.call(process.env, key)) {
-          if (ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES.split(',').includes(key)) {
-            console.log(
-              `[env] "${key}" is not defined in \`process.env\` and will not be added. (Because it is protected)`.red
-            );
+      const singleAppConfigMetadata = loadedConfigsPathsAndMetadata[config];
+
+      // Check for enabled:false
+      if (`${singleAppConfig?.enabled}`.toLowerCase() === 'false') {
+        console.log('App disabled:'.red, `${singleAppConfigMetadata.path}`.yellow);
+      } else {
+        // Enabled flag is not false, we will do the steps in this config file
+        // Inject environment variables
+        for (const [key, value] of Object.entries(newSoftEnv)) {
+          if (!Object.prototype.hasOwnProperty.call(process.env, key)) {
+            if (ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES.split(',').includes(key)) {
+              console.log(
+                `[env] "${key}" is not defined in \`process.env\` and will not be added from ${config}. (Because it is protected)`
+                  .red
+              );
+            } else {
+              process.env[key] = value;
+              console.log(`[env] "${key}" is not defined in \`process.env\` and will be added from ${config}.`.green);
+            }
           } else {
-            process.env[key] = value;
-            console.log(`[env] "${key}" is not defined in \`process.env\` and will be added.`.green);
+            // process.env[key] = value; // Important to stay commented!
+            console.log(
+              `[env] "${key}" is already defined in \`process.env\` and will not be added/overwritten from ${config}.`
+                .yellow
+            );
           }
-        } else {
-          // process.env[key] = value; // Important to stay commented!
-          console.log(`[env] "${key}" is already defined in \`process.env\` and will not be added/overwritten.`.yellow);
         }
-      }
-      const newHardEnv = singleAppConfig?.envForce ?? {};
-      for (const [key, value] of Object.entries(newHardEnv)) {
-        if (!Object.prototype.hasOwnProperty.call(process.env, key)) {
-          if (ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES.split(',').includes(key)) {
-            console.log(
-              `[forceEnv] "${key}" is not defined in \`process.env\` and will not be overwritten. (Because it is protected)`
-                .red
-            );
+        const newHardEnv = singleAppConfig?.envForce ?? {};
+        for (const [key, value] of Object.entries(newHardEnv)) {
+          if (!Object.prototype.hasOwnProperty.call(process.env, key)) {
+            if (ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES.split(',').includes(key)) {
+              console.log(
+                `[forceEnv] "${key}" is not defined in \`process.env\` and will not be overwritten from ${config}. (Because it is protected)`
+                  .red
+              );
+            } else {
+              process.env[key] = value;
+              console.log(
+                `[forceEnv] "${key}" is not defined in \`process.env\` and will be overwritten from ${config} (because of the forced env config)!`
+                  .red
+              );
+            }
           } else {
-            process.env[key] = value;
-            console.log(
-              `[forceEnv] "${key}" is not defined in \`process.env\` and will be overwritten (because of the forced env config)!`
-                .red
-            );
+            // eslint-disable-next-line no-lonely-if
+            if (ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES.split(',').includes(key)) {
+              console.log(
+                `[forceEnv] "${key}" is already defined in \`process.env\` and will not be overwritten from ${config}. (Because it is protected)`
+                  .red
+              );
+            } else {
+              process.env[key] = value;
+              console.log(
+                `[forceEnv] "${key}" is already defined in \`process.env\` and will be overwritten from ${config} (because of the forced env config)!`
+                  .red
+              );
+            }
           }
-        } else {
-          // eslint-disable-next-line no-lonely-if
-          if (ENV_HLAMBDA_LIST_OF_PROTECTED_ENV_VARIABLES.split(',').includes(key)) {
-            console.log(
-              `[forceEnv] "${key}" is already defined in \`process.env\` and will not be overwritten. (Because it is protected)`
-                .red
-            );
-          } else {
-            process.env[key] = value;
-            console.log(
-              `[forceEnv] "${key}" is already defined in \`process.env\` and will be overwritten (because of the forced env config)!`
-                .red
-            );
+        }
+
+        // Execute postReloadScripts
+        const postReloadScripts = singleAppConfig?.postReloadScripts ?? [];
+        if (Array.isArray(postReloadScripts) && postReloadScripts.length > 0) {
+          console.log('App contains postReloadScripts:'.red, `${singleAppConfigMetadata.path}`.yellow);
+          for (const item of postReloadScripts) {
+            console.log('Executing:'.red, `${item}`.yellow);
+            // eslint-disable-next-line no-await-in-loop
+            await execScriptCommand(item);
           }
         }
       }
@@ -256,7 +286,13 @@ const spinServer = async () => {
     // Before swagger we fallback to all "console/" requsts to console/index.html, now that is done at the end.
   }
   // --------------------------------------------------------------------------------
+  const ENABLE_REQUEST_HISTORY = isEnvTrue(constants.ENV_ENABLE_REQUEST_HISTORY);
+  if (ENABLE_REQUEST_HISTORY) {
+    app.use(expressRequestHistoryRecorderMiddleware);
+  }
+  // --------------------------------------------------------------------------------
   // Load apps
+  console.log(`${Array(80 + 1).join('-').yellow}`);
   const ENV_HLAMBDA_EXPRESS_LOADER_PREFIX = getEnvValue(constants.ENV_HLAMBDA_EXPRESS_LOADER_PREFIX);
   const loadedAppsRouterPrefix = getEnvValue(constants.ENV_HLAMBDA_LOADED_APPS_PREFIX);
   // - Load routes
@@ -273,8 +309,10 @@ const spinServer = async () => {
     }
   }
 
+  // Load entrypoints
+  console.log(`${Array(80 + 1).join('-').yellow}`);
   const ENV_HLAMBDA_ENTRYPOINT_LOADER_PREFIX = getEnvValue(constants.ENV_HLAMBDA_ENTRYPOINT_LOADER_PREFIX);
-  // - Load routes
+  // - Load entrypoints
   console.log(`Loading apps '${ENV_HLAMBDA_ENTRYPOINT_LOADER_PREFIX}*.js' entrypoints...`.yellow);
   const fileNameEntrypoint = path.resolve('./src/loaders/entrypoint-apps-loader.js');
   const { default: userEntrypoints } = await import(`file:///${fileNameEntrypoint}`); // Notice the default
@@ -381,6 +419,7 @@ const spinServer = async () => {
   // !!! Important !!! Error handler.
   app.use(hasuraErrorHandler);
   // --------------------------------------------------------------------------------
+  console.log(`${Array(80 + 1).join('-').yellow}`);
   // Get the PORT.
   const SERVER_PORT = getEnvValue(constants.ENV_SERVER_PORT);
   // await sleep(10000); // Debug artefact to test zero-downtime reload
@@ -388,6 +427,7 @@ const spinServer = async () => {
   const server = app.listen(SERVER_PORT, () => {
     console.log(`${Array(80 + 1).join('#').yellow}`);
     console.log(`Server listening at port: ${`${SERVER_PORT}`.yellow}`.green);
+    hlambdaEventEmitter.emit('server-listening', server); // Fire event so any app can known when we are listening.
     console.log(`${Array(80 + 1).join('#').yellow}`);
   });
   // --------------------------------------------------------------------------------

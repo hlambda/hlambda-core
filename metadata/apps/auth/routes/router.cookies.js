@@ -1,8 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-
 import cookieParser from 'cookie-parser';
-
 import errors from './../errors.demo.js';
 
 // Create express router
@@ -12,7 +10,7 @@ const router = express.Router();
 
 router.get(
   '/cookie/set',
-  asyncHandler((req, res) => {
+  asyncHandler(async (req, res) => {
     res.cookie('demo-jwt-token', 'token ey...', { maxAge: 10800 });
     res.send(`Demo token set!`);
   })
@@ -20,7 +18,7 @@ router.get(
 
 router.get(
   '/cookie/get',
-  asyncHandler((req, res) => {
+  asyncHandler(async (req, res) => {
     console.log('Cookies: ', req.cookies);
     res.send(JSON.stringify(req.cookies, null, 2));
   })

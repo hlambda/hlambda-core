@@ -13,6 +13,7 @@
     "run-docker": "docker run -d -p 8082:1331 --env HLAMBDA_ADMIN_SECRET=demo --name hlambda-server-dev --restart=always -v hlambda_metadata_dev:/usr/src/app/metadata hlambda-core:hotbuild",
     "docker-run": "npm run run-docker",
     "docker-clean": "docker container stop hlambda-server-dev && docker container rm hlambda-server-dev && docker volume rm hlambda_metadata_dev",
+    "docker-local-setup": "npm run docker-clean && npm run docker-build && npm run docker-run",
     "test": "echo \"Error: no test specified\" && exit 1",
     "cluster": "npx pm2 start ecosystem.config.cjs",
     "cluster-runtime": "npx pm2-runtime ecosystem.config.cjs",

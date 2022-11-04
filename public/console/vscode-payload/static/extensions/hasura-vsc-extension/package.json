@@ -34,12 +34,8 @@
         "title": "Hasura: Fetch GraphQL Schema"
       },
       {
-        "command": "hasura.exportMetadataCommand",
-        "title": "Hasura: Export metadata"
-      },
-      {
-        "command": "hasura.importMetadataCommand",
-        "title": "Hasura: Import metadata"
+        "command": "hasura.getCustomActions",
+        "title": "Hasura: List all custom actions"
       },
       {
         "command": "hasura.debugCommand",

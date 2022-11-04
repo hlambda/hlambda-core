@@ -6,7 +6,7 @@ export const setInstanceOfExtension = (_instanceOfExtension?: string | null | un
 	if (_instanceOfExtension) {
 		instanceOfExtension = _instanceOfExtension;
 	} else {
-		instanceOfExtension = uuidv4();
+		instanceOfExtension = uuidv4().slice(-8);
 	}
 };
 

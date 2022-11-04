@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import { v4 as uuidv4 } from 'uuid';
 
-import { RemoteRESTFS } from './../fileSystemProvider';
-import { MemFS } from './../inMemFileSystemProvider';
+import { RemoteRESTFS } from './../file-system/fileSystemProvider';
+import { RemoteRESTTerminal } from './../terminal/RemoteRESTTerminal';
 
 import { getInstanceOfExtension } from '../helpers/instanceOfExtension';
 import { getExtensionContext } from './../helpers/context';
@@ -17,27 +17,24 @@ export type Connection = {
 };
 export const connections: Connection[] = [];
 
-export const connectCommand = async (inputUrl: any, inputAdminSecret: any, defaultConnectionId: any) => {
+export const connectCommand = async (
+	inputUrl: any,
+	inputAdminSecret: any,
+	defaultConnectionId: any,
+	showTerminal: boolean = false
+) => {
 	const instanceOfExtension = getInstanceOfExtension();
 	console.log('[connectCommand] Executed!');
-	const commandExecutionInstance = `${uuidv4()}`.substr(-8);
-	console.log(`[${instanceOfExtension}setupCommand] Executed! ${commandExecutionInstance}`);
+	const commandExecutionInstance = `${uuidv4()}`.slice(-8);
+	console.log(`[${instanceOfExtension} - connectCommand] Executed! ${commandExecutionInstance}`);
 
 	const context = getExtensionContext();
-
-	// Get the values from user
-
-	// const target = await vscode.window.showQuickPick(
-	//   [
-	//     { label: 'User', description: 'User Settings', target: vscode.ConfigurationTarget.Global },
-	//     { label: 'Workspace', description: 'Workspace Settings', target: vscode.ConfigurationTarget.Workspace }
-	//   ],
-	//   { placeHolder: 'Select the view to show when opening a window.' });
 
 	let url: any = inputUrl;
 	let adminSecret: any = inputAdminSecret;
 
 	if (inputUrl && inputAdminSecret) {
+		// Do nothing, we have inputs, no need to ask anything.
 	} else {
 		url = await vscode.window.showInputBox({
 			ignoreFocusOut: true,
@@ -72,17 +69,16 @@ export const connectCommand = async (inputUrl: any, inputAdminSecret: any, defau
 		return;
 	}
 
-	console.log(url, adminSecret);
-
-	// // Create temp inmem workspace, for proto-typing.
-	// const memFs = new MemFS();
-	// context.subscriptions.push(vscode.workspace.registerFileSystemProvider('memfs', memFs, { isCaseSensitive: true }));
-	// vscode.workspace.updateWorkspaceFolders(1, 0, { uri: vscode.Uri.parse('memfs:/'), name: 'InMemory Workbox' });
-
 	// Create the instance of RemoteRESTFS file system provider. (Every RemoteRESTFS has it's own instance of clientAPI)
-	const createNewConnection = async (url: string, adminSecret: string, defaultConnectionId: string | undefined) => {
+	const createNewConnection = async (
+		url: string,
+		adminSecret: string,
+		defaultConnectionId: string | undefined,
+		showTerminal: boolean = false
+	) => {
 		const connectionId = defaultConnectionId ?? uuidv4(); // domain_from_url(url); // uuidv4();
 		const remoteRESTFS = new RemoteRESTFS(url, adminSecret);
+		const terminal = new RemoteRESTTerminal(url, adminSecret, showTerminal);
 
 		// const kek = await remoteRESTFS.clientAPI.readDirectory('./');
 		// console.log(kek);
@@ -109,11 +105,14 @@ export const connectCommand = async (inputUrl: any, inputAdminSecret: any, defau
 			baseUrl: url,
 			adminSecret,
 			fs: remoteRESTFS,
+			terminal,
 		};
 	};
-	connections.push(await createNewConnection(url, adminSecret, defaultConnectionId));
+	connections.push(await createNewConnection(url, adminSecret, defaultConnectionId, showTerminal));
 
-	vscode.window.showInformationMessage(`${instanceOfExtension} Connect! ${commandExecutionInstance}`);
+	if (!defaultConnectionId) {
+		vscode.window.showInformationMessage(`${instanceOfExtension} Connect! ${commandExecutionInstance}`);
+	}
 };
 
 export const registerConnectCommands = (context: vscode.ExtensionContext) => {

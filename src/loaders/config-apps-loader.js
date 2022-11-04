@@ -10,6 +10,7 @@ import { constants, isEnvTrue, getEnvValue } from './../constants/index.js';
 const ENV_HLAMBDA_CONFIGURATION_LOADER_PREFIX = getEnvValue(constants.ENV_HLAMBDA_CONFIGURATION_LOADER_PREFIX);
 
 const loadedConfigs = {};
+export const loadedConfigsPathsAndMetadata = {};
 
 // import route404 from './routes/404.js';
 
@@ -45,6 +46,13 @@ glob
           console.error(error);
           return undefined;
         }); // Returns promise
+
+      loadedConfigsPathsAndMetadata[moduleConfigId] = {
+        path: file,
+        fileName,
+        fileExtension,
+        fileBaseName,
+      };
     }
   });
 

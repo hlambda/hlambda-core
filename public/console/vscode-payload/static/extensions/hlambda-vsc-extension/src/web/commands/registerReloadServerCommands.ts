@@ -4,7 +4,6 @@ import { getInstanceOfExtension } from '../helpers/instanceOfExtension';
 import { getExtensionContext } from './../helpers/context';
 
 import { createInstance } from '../helpers/instanceOfCommand';
-
 import { connections } from './registerConnectCommands';
 
 const reloadServerCommand = async () => {
@@ -13,7 +12,7 @@ const reloadServerCommand = async () => {
 	const instanceOfCommand = createInstance();
 
 	const commandExecutionInstance = `${instanceOfCommand.getInstance()}`;
-	console.log(`[${instanceOfExtension}|reloadServerCommand]\nExecuted!\n<${commandExecutionInstance}>`);
+	console.log(`[${instanceOfExtension} - reloadServerCommand]\nExecuted!\n<${commandExecutionInstance}>`);
 
 	const context = getExtensionContext();
 
@@ -25,22 +24,26 @@ const reloadServerCommand = async () => {
 
 	// We need at least one connection
 	if (connectionsUrls.length > 0) {
-		const selectedConnectionUrl = await vscode.window.showQuickPick(connectionsUrls, {
-			placeHolder: 'Select Hlambda Server you want to issue the command!',
-		});
+		let selectedConnectionUrl: string | undefined = connectionsUrls[0];
+
+		if (connectionsUrls.length > 1) {
+			// We need to ask, it is not known
+			selectedConnectionUrl = await vscode.window.showQuickPick(connectionsUrls, {
+				placeHolder: 'Select Hlambda Server you want to issue the command!',
+			});
+		}
 
 		console.log('selectedConnectionUrl', selectedConnectionUrl);
+
 		// We need to find the connection with that name.
 		const conn = connections.find((o) => {
 			return o.baseUrl === selectedConnectionUrl;
 		});
 
 		// console.log(conn);
-		const res = await conn?.fs?.clientAPI?.restartServer();
+		const res = await conn?.fs?.clientAPI?.reloadServer();
 
-		vscode.window.showInformationMessage(
-			`[${instanceOfExtension}|reloadServerCommand]\nSuccess!\n<${commandExecutionInstance}>\n\n${res}`
-		);
+		vscode.window.showInformationMessage(`Success! Server reloaded.\n\n${res}`);
 	}
 };
 

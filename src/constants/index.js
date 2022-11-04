@@ -31,6 +31,24 @@ export const constants = {
     default: 'critical,normal,verbose',
     description: 'Sets up logging level: critical, normal, verbose',
   },
+  ENV_LOG_HISTORY_BUFFER_SIZE: {
+    name: 'LOG_HISTORY_BUFFER_SIZE',
+    default: '255',
+    description:
+      'Sets up logging history buffer size. It is a max length of the history buffer, every record is the call of log function, that can contain multi-line text. (Default: 255)',
+  },
+  ENV_EXPRESS_REQUEST_LOG_HISTORY_BUFFER_SIZE: {
+    name: 'EXPRESS_REQUEST_LOG_HISTORY_BUFFER_SIZE',
+    default: '255',
+    description:
+      'Sets up logging history buffer size. It is a max length of the history buffer, every record is the record of the request. (Default: 255)',
+  },
+  ENV_ENABLE_REQUEST_HISTORY: {
+    name: 'ENABLE_REQUEST_HISTORY',
+    default: 'false',
+    description:
+      'Enables request history, useful if you want to log the last n requests and be able to replay the request. (Default: false)',
+  },
 
   // Cluster
   ENV_NODE_APP_INSTANCE: {

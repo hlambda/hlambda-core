@@ -10,14 +10,13 @@ import {
 	TextEditor,
 	commands,
 } from 'vscode';
-import { basename } from 'path';
+import { basename, posix } from 'path';
 
 // Load all the dependencies
 import { setInstanceOfExtension, getInstanceOfExtension } from './helpers/instanceOfExtension';
 import { setExtensionContext } from './helpers/context';
 
 // Import commands
-import { registerSetupCommands } from './commands/registerSetupCommands';
 import { registerConnectCommands, connectCommand } from './commands/registerConnectCommands';
 import { registerDisconnectCommands } from './commands/registerDisconnectCommands';
 import { registerRunShellCommands } from './commands/registerRunShellCommands';
@@ -33,10 +32,17 @@ import { registerDebugCommands } from './commands/registerDebugCommands';
 import { activateTerminal } from './terminal/RemoteRESTTerminal';
 
 // Providers
-import { MemFS } from './inMemFileSystemProvider';
-// import { browserUrlManager } from './browserUrlManager';
+import { MemFS } from './file-system/inMemFileSystemProvider';
+import { SidebarProvider } from './sidebar/SidebarProvider';
+import { VirtualDocumentProvider } from './file-system/virtualDocumentProvider';
 
-import { SidebarProvider } from './SidebarProvider';
+// Browser communicator
+import {
+	getWindowLocationOriginFromBrowserHostingVSC,
+	getAdminSecretFromBrowsersLocalStorage,
+	getWindowLocationUrlFromBrowserHostingVSC,
+	getWindowLocationHashFromBrowserHostingVSC,
+} from './browser';
 
 // Set the name of extension
 export const extensionName = 'hlambda';
@@ -59,19 +65,12 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Register terminal
 	activateTerminal(context);
 
-	// // Register platform adapters
-	// await registerAdapters();
-
-	// // Ensure the router has been initialized
-	// await router.initialize(browserUrlManager);
-
 	// Do follow-up works in parallel
 	await Promise.all([
 		// registerVSCodeProviders(),
 		// registerEventListeners(),
 
 		// Register all commands
-		registerSetupCommands(context),
 		registerConnectCommands(context),
 		registerDisconnectCommands(context),
 		registerRunShellCommands(context),
@@ -89,14 +88,16 @@ export async function activate(context: vscode.ExtensionContext) {
 		// decorateStatusBar(),
 	]);
 
-	// initialVSCodeState();
-
 	// Init and create sidebar
 	const sidebarProvider = new SidebarProvider(context.extensionUri);
 	context.subscriptions.push(vscode.window.registerWebviewViewProvider('hlambda-sidebar', sidebarProvider));
 
-	// Init and create status bar
-	// TODO: create status bar view
+	// Create virtual document provider with scheme
+	const instanceOfVirtualDocumentProvider = new VirtualDocumentProvider();
+	vscode.workspace.registerTextDocumentContentProvider(
+		'hyper-lambda-web-virtual-document',
+		instanceOfVirtualDocumentProvider
+	);
 
 	const disposable = vscode.commands.registerCommand('hlambda.workbench.init-workbench', (_) => {
 		console.log('Init inmem workbench');
@@ -118,17 +119,15 @@ export async function activate(context: vscode.ExtensionContext) {
 					name: `InMem Workbench`,
 				}
 			);
-		}, 1500);
+		}, 1000);
 
 		memFs.writeFile(
 			vscode.Uri.parse(`memfs:/README.md`),
 			Buffer.from(
-				'Hello! This is a file saved in your in memory file system. Use can use this workspace as a temorary storage.'
+				'Hello! This is a file saved in your in memory file system. You can use this workspace as a temorary storage.'
 			),
 			{ create: true, overwrite: true }
 		);
-
-		return true;
 	});
 	context.subscriptions.push(disposable);
 
@@ -207,42 +206,76 @@ function getEditorInfo(): { text?: string; tooltip?: string; color?: string } | 
 const initialVSCodeState = async () => {
 	await vscode.commands.executeCommand('hlambda.workbench.init-workbench');
 
-	// Hack to get data from browser hosting the vscode
-	const getWindowLocationOriginFromBrowsersLocalStorage = () => {
-		return new Promise((resolve) => {
-			return vscode.commands.executeCommand('hyper-lambda.commands.vscode.getBrowserOrigin').then(
-				(data: any) => {
-					resolve(data);
-				},
-				() => resolve(undefined)
-			);
-		});
-	};
-	const getAdminSecretFromBrowsersLocalStorage = () => {
-		return new Promise((resolve) => {
-			return vscode.commands.executeCommand('hyper-lambda.commands.vscode.getAdminSecret').then(
-				(data: any) => {
-					resolve(data);
-				},
-				() => resolve(undefined)
-			);
-		});
-	};
+	// We check for browsers full url, we parse the string after hash to get the details of the default file we want to open.
+	const windowUrl: any = await getWindowLocationUrlFromBrowserHostingVSC();
+	const windowLocationHash: any = await getWindowLocationHashFromBrowserHostingVSC();
+	// console.log('url', windowUrl); // window.location.href;
+	// console.log('windowLocationHash', windowLocationHash); // window.location.href;
+	let shouldShowTerminalByDefault: string | null = null;
+	if (windowUrl) {
+		// Parse url, get the path
+		const parsedHash = new URLSearchParams(
+			decodeURIComponent(windowLocationHash?.substring(1) ?? '') // Skip the first char (#) and / from swagger
+		);
+		shouldShowTerminalByDefault = parsedHash.get('openDefaultShell');
+	}
 
-	const origin = await getWindowLocationOriginFromBrowsersLocalStorage();
+	// Then get provider and connection
+	const origin = await getWindowLocationOriginFromBrowserHostingVSC();
 	console.log('origin', origin);
 
 	const adminSecret = await getAdminSecretFromBrowsersLocalStorage();
 	console.log('adminSecret', adminSecret);
-
 	if (origin && adminSecret) {
 		vscode.window.showInformationMessage(`Found secet in the browsers local storage, connecting automatically.`);
-		await connectCommand(origin, adminSecret, 'default');
+		await connectCommand(origin, adminSecret, 'default', !!shouldShowTerminalByDefault);
+
+		// Get all active extensions
+		const HASURA_EXTENSION_ID = 'undefined.hasura';
+		console.log('Total number of extensions:', vscode.extensions.all.length);
+		console.log(
+			'Extensions',
+			vscode.extensions.all.find((item) => {
+				return item.id.includes('hasura');
+			})
+		);
+		const extension = await vscode.extensions.getExtension(HASURA_EXTENSION_ID);
+		if (extension) {
+			console.log('We have the Hasura extension, calling connect command');
+			// Get the env data first, extract admin secret and url.
+
+			// Pass this to the Hasura extension to create new connection.
+		}
+		console.log('hasura-vsc-extension', extension);
 	} else {
 		vscode.window.showInformationMessage(`No admin secret found in local storage! Please connect manually.`);
 	}
 
-	// Now it is done, we await connectCommand, such that provider is ready.
+	// Only after provider load default file
+	if (windowUrl) {
+		// Parse url, get the path
+		const parsedHash = new URLSearchParams(
+			decodeURIComponent(windowLocationHash?.substring(1) ?? '') // Skip the first char (#) and / from swagger
+		);
+
+		const defaultFile = parsedHash.get('defaultFile');
+		//console.log('defaultFile', defaultFile);
+		if (defaultFile) {
+			const jsUri = vscode.Uri.parse(defaultFile);
+
+			try {
+				await vscode.workspace.fs.stat(jsUri);
+				// vscode.window.showTextDocument(jsUri, { viewColumn: vscode.ViewColumn.Beside });
+				vscode.window.showTextDocument(jsUri);
+			} catch {
+				// No need to show error message, just ignore.
+				// vscode.window.showInformationMessage(`${jsUri.toString(true)} file does *not* exist`);
+			}
+		}
+
+		shouldShowTerminalByDefault = parsedHash.get('openDefaultShell');
+	}
+
 	return;
 };
 
