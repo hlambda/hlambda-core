@@ -39,6 +39,13 @@ export const errors = {
     message: 'Forbidden.',
   },
 
+  ERROR_INVALID_TOKEN_PROVIDED: {
+    message: 'Invalid token provided.',
+  },
+  ERROR_FORBIDDEN: {
+    message: 'Forbidden.',
+  },
+
   // Special errors
   UNKNOWN_ERROR: {
     message: 'Unknown server error.',
