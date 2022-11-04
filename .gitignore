@@ -10,3 +10,8 @@ data/metadata-history/*
 metadata_tmp/
 
 .DS_Store
+
+# vscode payload should not be ignored at all, node_modules are also important.
+# same goes for dist folders.
+!/public/console/vscode-payload/**/*
+.DS_Store
