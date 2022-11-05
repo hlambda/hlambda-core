@@ -48,7 +48,7 @@ In production deployments, you can bake metadata and disable the UI console.
 You can check ["Getting started"](https://www.hlambda.io/getting-started/) on how to get started with Hlambda. In short, it goes like this:
 
 - Install latest hlambda CLI. (Hint: `npm i -g hlambda-cli`)
-- Spin up the Docker instance of the Hlambda server. (Hint: Use `hl snip d` to get docker snippet)
+- Spin up the Docker instance of the Hlambda server. (Hint: Use `hl snip d` to get the docker snippet)
 - Use CLI to generate a new Hlambda app. (Hint: `hl init my-app`)
 - (Optional) Configure multiple environments. (Hint: `hl env add staging`)
 - Deploy metadata (Hint: `hl m a`)
@@ -74,10 +74,14 @@ Any contributions are greatly appreciated.
 
 ## Authors
 
-Gordan Nekić <gordan@neki.ch>
+- Gordan Nekić <gordan@neki.ch>
+
+<a href="https://github.com/sponsors/gnekich" title="Sponsor Gordan Nekić"><img src="https://img.shields.io/github/sponsors/gnekich?style=plastic" alt="Github Sponsors button" /></a>
 
 ## How to support the project
 
-I've recently created Patreon that will enable me to work more on the Hlambda services.
+I've recently created Patreon which will enable me to work more on the Hlambda services.
 
 <span class="badge-patreon"><a href="https://www.patreon.com/bePatron?u=70751523" title="Donate to this project using Patreon"><img src="https://img.shields.io/badge/patreon-donate-green.svg" alt="Patreon donate button" /></a></span>
+
+You can also sponsor the developers directly through the GitHub Sponsors program.

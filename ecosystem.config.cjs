@@ -4,7 +4,7 @@ module.exports = {
       name: 'Backend Microservice',
       script: 'src/index.js',
       // script: 'npm', // Do not use this, express port binding will be problematic with npm start
-      // args: 'run start', // Look abowe
+      // args: 'run start', // Look above
 
       exec_mode: 'cluster',
 

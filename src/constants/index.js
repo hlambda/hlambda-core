@@ -195,6 +195,40 @@ export const constants = {
     description: 'Expires in value in seconds, time before JWT token expires and cookie is deleted on the client.',
   },
 
+  // GitOps
+  ENV_ENABLE_HLAMBDA_GIT_SYNC: {
+    name: 'ENABLE_HLAMBDA_GIT_SYNC',
+    default: 'false',
+    description:
+      'Turns on the GIT SYNC option, where the server will be able to sync metadata with remote repository. (Default: false)',
+  },
+  ENV_HLAMBDA_GIT_SYNC_URL: {
+    name: 'HLAMBDA_GIT_SYNC_URL',
+    default: '',
+    description: 'Sync repository url.',
+  },
+  ENV_HLAMBDA_GIT_SYNC_USERNAME: {
+    name: 'HLAMBDA_GIT_SYNC_USERNAME',
+    default: '',
+    description: 'Sync repository username.',
+  },
+  ENV_HLAMBDA_GIT_SYNC_PASSWORD: {
+    name: 'HLAMBDA_GIT_SYNC_PASSWORD',
+    default: '',
+    description: 'Sync repository password.',
+  },
+  ENV_HLAMBDA_GIT_SYNC_BRANCH: {
+    name: 'HLAMBDA_GIT_SYNC_BRANCH',
+    default: 'master',
+    description: 'Sync default branch. (Default: master) If falsey value, the current HEAD branch will be used.',
+  },
+  ENV_HLAMBDA_GIT_SYNC_INTERVAL_SECONDS: {
+    name: 'HLAMBDA_GIT_SYNC_INTERVAL_SECONDS',
+    default: '240',
+    description:
+      'When sync is enabled, system will automatically try to sync with the current branch, it will work only if there is no conflicts, to not destroy live work. (Default: 240 (4m). If set to 0, disables pooling)',
+  },
+
   // Loader configurations
   ENV_HLAMBDA_CONFIGURATION_LOADER_PREFIX: {
     name: 'HLAMBDA_CONFIGURATION_LOADER_PREFIX',

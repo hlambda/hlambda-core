@@ -1,3 +1,15 @@
+# Release 0.3.2
+
+- Fixes the version bump issue.
+- Updated README.md
+- GitOps, remote repository sync.
+- Tab complete in Hlambda Pseudo Terminal
+
+# Release 0.3.1
+
+- Fix the CORS issue with the vscode when requesting external data from vscode-unpkg CDN.
+- Fix the issue with Webpack miss-configuration that was wrapping dist and src folder instead of only dist.
+
 # Release 0.3.0
 
 - Added zero downtime reload.
