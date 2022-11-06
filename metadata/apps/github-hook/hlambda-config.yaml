@@ -1,0 +1,6 @@
+env:
+  HLAMBDA_GIT_SYNC_URL: 'https://github.com/hlambda/example-metadata-sync'
+  HLAMBDA_GIT_SYNC_USERNAME: ''
+  HLAMBDA_GIT_SYNC_PASSWORD: ''
+  ENABLE_HLAMBDA_GIT_SYNC: false
+  HLAMBDA_GIT_SYNC_INTERVAL_SECONDS: '240'

@@ -20,7 +20,7 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-# RUN echo "`date`" > ./image-build-time.txt
+RUN echo "`date +\"%Y-%m-%dT%H:%M:%S%z\"`" > ./image-build-time.txt
 RUN echo "`date +%s`" > ./image-build-timestamp.txt
 
 RUN ["npm", "install"]
@@ -40,9 +40,4 @@ RUN cp -r ./metadata/* ./data/metadata-examples
 RUN npm install pm2 -g
 
 # CMD ["npm", "run", "start"]
-
 CMD [ "pm2-runtime", "start", "ecosystem.config.cjs" ]
-
-# This is not ready, there are known bugs with cluster mode (state management between nodes, like path in remote shell etc...)
-#CMD ["npm", "run", "cluster-runtime"]
-

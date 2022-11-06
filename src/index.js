@@ -47,6 +47,9 @@ import execScriptCommand from './utils/execScriptCommand.js';
 // Create Hlambda event emmitter
 import hlambdaEventEmitter from './emitter/index.js';
 
+// Import git sync
+import { startGitSync } from './utils/gitSync.js';
+
 // Customized npm packages
 import swaggerUi from './custom/swagger-ui-express/index.js';
 // --------------------------------------------------------------------------------
@@ -433,6 +436,14 @@ const spinServer = async () => {
     hlambdaEventEmitter.emit('server-listening', server); // Fire event so any app can known when we are listening.
     console.log(`${Array(80 + 1).join('#').yellow}`);
   });
+  // --------------------------------------------------------------------------------
+  if (isEnvTrue(constants.ENV_ENABLE_HLAMBDA_GIT_SYNC)) {
+    // console.log('Git sync is starting...'.green);
+    await startGitSync();
+  } else {
+    console.log('Git sync disabled.'.yellow);
+  }
+  console.log(`${Array(80 + 1).join('-').yellow}`);
   // --------------------------------------------------------------------------------
   // For some packages like socket.io we need reference to the server instance to attach
   global.HLAMBDA_SERVER_INSTANCE = server; // Legacy

@@ -14,9 +14,10 @@ env:
 # Custom environment variables override for our app
 envForce:
   HASURA_GRAPHQL_API_ENDPOINT: 'http://graphql-engine:8099/v1/graphql'
-  HASURA_GRAPHQL_ADMIN_SECRET: 'real-password'
+  HASURA_GRAPHQL_ADMIN_SECRET: 'demo'
   SPECIAL_PASSWORD: 'value-from-env'
   HLAMBDA_DISABLE_CONSOLE: 'false'
+  HASURA_GRAPHQL_API_ENDPOINT_EXTERNAL: 'http://localhost:18080/v1/graphql'
 
 # Consider that cwd for the script is ./metadata/ , also we suggest that you do not deploy ts as metadata, only js and do transpilation before metadata apply.
 # But if you want you can slow down the reload time and await for scripts to run after every reload.
