@@ -441,7 +441,7 @@ const spinServer = async () => {
     // console.log('Git sync is starting...'.green);
     await startGitSync();
   } else {
-    console.log('Git sync is disabled.'.red);
+    console.log('Git sync disabled.'.yellow);
   }
   console.log(`${Array(80 + 1).join('-').yellow}`);
   // --------------------------------------------------------------------------------

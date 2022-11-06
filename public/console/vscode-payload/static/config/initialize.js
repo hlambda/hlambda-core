@@ -38,15 +38,7 @@
 			controlUrl: 'https://az764295.vo.msecnd.net/extensions/marketplace.json',
 			recommendationsUrl: 'https://az764295.vo.msecnd.net/extensions/workspaceRecommendations.json.gz',
 		},
-		linkProtectionTrustedDomains: [
-			window.location.origin,
-			'*',
-			'*.hyperlambda.com',
-			'*.github.com',
-			'*.npmjs.com',
-			'*.npmjs1s.com',
-			'*.microsoft.com',
-		],
+		linkProtectionTrustedDomains: [window.location.origin, '*', '*.github.com', '*.microsoft.com'],
 		extensionEnabledApiProposals: { 'ms-vscode.anycode': ['extensionsAny'] },
 	};
 	/*** end config block ***/

@@ -9,8 +9,9 @@ import { constants, isEnvTrue, getEnvValue } from './../constants/index.js';
 let timer;
 
 export const gitSync = async () => {
+  const commandToExecute = getEnvValue(constants.ENV_HLAMBDA_GIT_SYNC_COMMAND);
   // TODO: Implement actuall git pull and check for the results, including auth.
-  const result = await execScriptCommand('git pull');
+  const result = await execScriptCommand(commandToExecute);
   // console.log(result);
   if (!result.stdout.includes('Already up to date.') && result.code === 0) {
     console.log('GitSync - Reloading...'.yellow);
@@ -30,7 +31,7 @@ export const startGitSync = async () => {
     // All good
     console.log('Git sync started!'.green);
   } else {
-    console.log('Git sync is disabled. Git sync interval seconds are set to 0.'.red);
+    console.log('Git sync disabled. Git sync interval seconds are set to 0.'.red);
     return;
   }
 

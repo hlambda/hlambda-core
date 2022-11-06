@@ -228,6 +228,11 @@ export const constants = {
     description:
       'When sync is enabled, system will automatically try to sync with the current branch, it will work only if there is no conflicts, to not destroy live work. (Default: 240 (4m). If set to 0, disables pooling)',
   },
+  ENV_HLAMBDA_GIT_SYNC_COMMAND: {
+    name: 'HLAMBDA_GIT_SYNC_COMMAND',
+    default: 'git pull',
+    description: 'This command will run when sync is executed. (Default: git pull)',
+  },
 
   // Loader configurations
   ENV_HLAMBDA_CONFIGURATION_LOADER_PREFIX: {

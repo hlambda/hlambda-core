@@ -1,9 +1,12 @@
 # Release 0.3.2
 
-- Fixes the version bump issue.
-- Updated README.md
-- GitOps, remote repository sync.
-- Tab complete in Hlambda Pseudo Terminal
+- Fixed the version bump issue.
+- Updated `README.md`.
+- Added GitOps functionality, remote repository sync.
+- Added tab complete in Hlambda Pseudo Terminal. (With basic contextual suggestions)
+- Added option to reload server via vscode status bar.
+- If set, auto connect to Hasura instance from Hlambda environment variables. (Retreive GraphQL schema introspection, and list of custom actions.) System will look for `HASURA_GRAPHQL_API_ENDPOINT_EXTERNAL` to have access from the browser. (This can be tunnel url if Hasura instance is not available from the browser)
+- Bugfixes.
 
 # Release 0.3.1
 
